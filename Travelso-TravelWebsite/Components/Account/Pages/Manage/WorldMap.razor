@@ -1,0 +1,55 @@
+﻿@page "/Account/Manage/MyCountries"
+@rendermode InteractiveServer
+
+<SfMaps>
+    <MapsTitleSettings Text="Countries i've traveled to"></MapsTitleSettings>
+    <MapsLayers>
+        <MapsLayer ShapeData="@MapShapeData" DataSource="@StatusDetails" ShapePropertyPath='new string[]{"name"}'
+                   ShapeDataPath="Name" TValue="CountryData">
+            <MapsLegendSettings Visible="true"></MapsLegendSettings>
+            <MapsLayerTooltipSettings Visible="true" ValuePath="Name"></MapsLayerTooltipSettings>
+            <MapsDataLabelSettings Visible="true"></MapsDataLabelSettings>
+            <MapsShapeSettings ColorValuePath="Visited" Fill="#E5E5E5">
+                <MapsShapeColorMappings>
+                    <MapsShapeColorMapping Color='new string[] {"#a69d70"}' Value="Visited"></MapsShapeColorMapping>
+                    @*                     <MapsShapeColorMapping Color='new string[] {"#A4D6AD"}' Value="Moderate"></MapsShapeColorMapping>
+                    <MapsShapeColorMapping Color='new string[] {"#DEEBAE"}' Value="Low"></MapsShapeColorMapping> *@
+                </MapsShapeColorMappings>
+            </MapsShapeSettings>
+        </MapsLayer>
+    </MapsLayers>
+</SfMaps>
+
+@code {
+
+    public class CountryData
+    {
+        public string Name { get; set; }
+        public string Visited { get; set; }
+    }
+
+    public List<CountryData> StatusDetails = new List<CountryData>
+    {
+         new CountryData { Name= "Spain", Visited= "Visited"},
+         new CountryData { Name= "Austria", Visited= "Visited"},
+         new CountryData { Name= "United Kingdom", Visited= "Visited"},
+         new CountryData { Name= "Australia", Visited= "Visited"},
+         new CountryData { Name= "Finland", Visited= "Visited"},
+         new CountryData { Name= "Iceland", Visited= "Visited"},
+         new CountryData { Name= "Bermuda", Visited= "Visited"}
+    };
+
+    public class MapDataSettings
+    {
+        public Boolean async { get; set; }
+        public String dataOptions { get; set; }
+        public String type { get; set; }
+    }
+    public MapDataSettings MapShapeData = new MapDataSettings
+        {
+            async = true,
+            type = "GET",
+            dataOptions = "MapsData/world-map.json"
+        };
+
+}

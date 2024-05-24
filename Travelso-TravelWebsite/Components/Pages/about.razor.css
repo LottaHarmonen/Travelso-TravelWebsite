@@ -1,0 +1,23 @@
+﻿body {
+}
+
+.AboutContainer {
+    background-image: url('newfolder/rebe-adelaida-zunqwmy5b6m-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow-x: hidden;
+    margin-top: -150px;
+    height: 750px;
+}
+
+.centered-container {
+
+    color: white;
+    padding: 200px;
+}
+
+    @media screen and (max-width: 768px) {
+        .centered-container {
+            padding: 0 20px; /* Adjust as needed */
+        }
+    }

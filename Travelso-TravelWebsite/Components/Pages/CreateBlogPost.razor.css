@@ -1,0 +1,20 @@
+﻿body {
+}
+
+.BlogpostContainer {
+    background: linear-gradient(135deg, #535353 0%, #827055 100%);
+    background-size: cover;
+    background-position: center;
+    overflow-x: hidden;
+    margin-top: -150px;
+    height: 750px;
+}
+
+.createAPostDiv {
+    margin-top: 150px;
+    color: white;
+    background-color: #737373;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    height: 100%;
+}

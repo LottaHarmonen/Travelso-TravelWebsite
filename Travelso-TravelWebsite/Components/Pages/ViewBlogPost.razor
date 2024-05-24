@@ -1,0 +1,101 @@
+﻿@page "/ViewBlogPost"
+@using Azure.Identity
+@using Travelso_Website_Shared.Entities
+@rendermode InteractiveServer
+
+
+<div class="BlogpostContainer">
+
+
+    <div class="row row2" style="justify-content:center">
+        <div class="col-md-9 ViewPostDiv">
+
+            <img src="@ImageUrl" class="img-fluid" alt="Blogpost Image" />
+
+            <div class="d-flex align-items-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                </svg>
+                <span>@CountryName</span>
+            </div>
+
+            <div>
+                <br />
+                @((MarkupString)QuillHTMLContent)
+                <p>Publication date @post.PublishedDate</p>
+            </div>
+            <br />
+            
+            
+            <!-- TravelsoUser profile section -->
+            <div class="d-flex align-items-center justify-content-center mb-3">
+                <img src="@UserProfileImageUrl" class="rounded-circle mr-3" style="width: 70px; height: 70px;" alt="TravelsoUser Profile Image" />
+                <span style="font-size: 20px;">@Username</span>
+            </div>
+
+            <hr/>
+
+            <div class="CommentSection justify-content-center">
+                <h3>Let @Username know what you think!</h3>
+                
+                <!-- List of comments -->
+                <div class="mt-3 col-md-6">
+                    <div class="list-group">
+                        <Virtualize Items="Comments">
+                            <ItemContent Context="comment">
+                                <div class="list-group-item d-flex align-items-center">
+                                    <img src="@ProfileImageUrl" class="rounded-circle mr-3" style="width: 40px; height: 40px; margin: 10px;" alt="TravelsoUser Profile Image" />
+                                    <div>
+                                        @* <h5 class="card-title">@comment.UserId</h5> *@
+                                        <p class="card-text">@comment.comment</p>
+                                        <p class="card-footer">@comment.publicationDate </p>
+                                    </div>
+                                </div>
+                            </ItemContent>
+                        </Virtualize>
+                    </div>
+                </div>
+                
+
+                <form class="col-md-6">
+                    <div class="form-group">
+                        <label for="commentName">Name:</label>
+                        <input type="text" class="form-control" id="commentName">
+                    </div>
+                    <div class="form-group">
+                        <label for="commentContent">Comment:</label>
+                        <textarea class="form-control" id="commentContent" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    string QuillHTMLContent = "<h2><strong style=\"color: var(--tw-prose-bold);\">Exploring Lisbon's Iconic Trams</strong></h2><h4><em>When visiting Lisbon, one of the first things that captures your attention is the iconic yellow trams that crisscross the city's hilly streets. These vintage vehicles, with their charming wooden interiors and nostalgic clanging bells, are not just a mode of transportation but a symbol of Lisbon's rich history and culture.</em></h4><p><br></p><p>Originally introduced in the late 19th century, Lisbon's tram network has evolved over the years, blending modern efficiency with old-world charm. Riding one of these trams is not just a way to get from point A to point B; it's a journey through time, offering glimpses of historic neighborhoods, bustling markets, and panoramic views of the city's picturesque skyline.</p><p>One of the most popular tram routes is Tram 28, which winds its way through the narrow streets of Alfama, Lisbon's oldest district. As the tram rattles along the cobbled streets, passengers are treated to stunning views of historic landmarks such as São Jorge Castle and Sé Cathedral, as well as glimpses of everyday life in Lisbon, from laundry hanging out to dry on balconies to locals chatting animatedly in cafes.</p><p><br></p><ul><li>For a more leisurely experience: </li><li>Hop on Tram 15E, which takes you on a scenic journey along the Tagus River, passing by the iconic Belém Tower and the grandiose Jerónimos Monastery. Along the way, you can marvel at the intricate Manueline architecture and soak in the maritime history that has shaped Lisbon's identity.</li></ul><p><br></p><h3><em>Whether you're a history buff, a photography enthusiast, or simply looking for a unique way to explore the city, Lisbon's trams offer an unforgettable experience that's sure to leave a lasting impression.</em></h3>";
+    string ImageUrl = "https://www.knorr-bremse.com/media/5000_magazin/2020/juni_1/strassenbahn_lissabon/variante_16x9_1920w.jpg"; // Replace with the URL of your image
+    string CountryName = "Portugal"; // Replace with the name of the country
+    string CountryFlagUrl = "https://example.com/flags/portugal.png";
+    string Username = "Lottis";
+    string UserProfileImageUrl = "https://plus.unsplash.com/premium_photo-1714591971607-ba1d91fc8386?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    string ProfileImageUrl = "https://images.unsplash.com/photo-1715114064378-b97c82f06856?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+    public BlogPost post = new()
+    {
+        PublishedDate = DateTime.Now
+    };
+
+
+    public List<Comment> Comments { get; set; } = new List<Comment>
+    {
+        // new Comment { UserId = 1, comment = "Comment content goes here jrekwrje jrewrjm croer ceirc iwepookjflm,jril!!!!.", publicationDate = DateTime.Now},
+        // new Comment { UserId = 2, comment = "Another comment content.", publicationDate = DateTime.Now},
+        
+    };
+}

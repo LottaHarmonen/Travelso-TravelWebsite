@@ -1,0 +1,21 @@
+﻿body {
+}
+
+.row2 {
+    background-image: url('/NewFolder/rebe-adelaida-zunQwMy5B6M-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow-x: hidden;
+    margin-top: -150px;
+}
+
+
+
+.RegisterDiv {
+    background-color: white !important;
+    padding: 20px;
+    margin: 30px;
+    border-radius: 10px;
+    height: 500px;
+    margin-top: 200px;
+}
