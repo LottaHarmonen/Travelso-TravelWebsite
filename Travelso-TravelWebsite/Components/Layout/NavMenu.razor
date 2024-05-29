@@ -24,19 +24,25 @@
                 <AuthorizeView>
                     <Authorized>
                         <li class="nav-item">
+                            <NavLink class="nav-link" href="CreateBlogPost">Create
+
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
                             <NavLink class="nav-link" href="Account/Manage">
                                 <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> My Account
                             </NavLink>
                         </li>
                         <li class="nav-item">
                             <form action="Account/Logout" method="post">
-                                <AntiforgeryToken />
-                                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                <AntiforgeryToken/>
+                                <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
                                 <button type="submit" class="nav-link">
                                     <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
                                 </button>
                             </form>
                         </li>
+
                     </Authorized>
                     <NotAuthorized>
                         <li class="nav-item">

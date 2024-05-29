@@ -5,67 +5,55 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_Website.DataAccess.Repositories;
 
-public class CountryRepository : ICountryService
+public class CountryRepository(TravelsoSQLDataContext context) : ICountryService
 {
-    private readonly TravelsoSQLDataContext _sqlDataContext;
-    
-
-    public CountryRepository(TravelsoSQLDataContext context)
+    public async Task<IEnumerable<Country>>? GetAll()
     {
-        _sqlDataContext = context;
+        return await context.Countries.ToListAsync();
     }
 
-    public List<Country> Countries { get; set; } = new List<Country>
+    public async Task<bool> Add(Country entity)
     {
-        new Country { Name = "Portugal", ImageURL = "https://example.com/flags/portugal.png" },
-        new Country { Name = "Spain", ImageURL = "https://example.com/flags/spain.png" },
-        new Country { Name = "France", ImageURL = "https://example.com/flags/france.png" },
-    };
-
-    public async Task<IEnumerable<Country>> GetAll()
-    {
-        return await _sqlDataContext.Countries.ToListAsync();
-    }
-
-    public async Task Add(Country entity)
-    {
-        await _sqlDataContext.Countries.AddAsync(entity);
-        await _sqlDataContext.SaveChangesAsync();
+        await context.Countries.AddAsync(entity);
+        await context.SaveChangesAsync();
+        return true;
 
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         var countryToDelete = await GetById(id);
         if (countryToDelete is null)
         {
-
+            return false;
         }
 
-        _sqlDataContext.Countries.Remove(countryToDelete);
-        await _sqlDataContext.SaveChangesAsync();
+        context.Countries.Remove(countryToDelete);
+        await context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<Country> GetById(int id)
+    public async Task<Country>? GetById(int id)
     {
-        return await _sqlDataContext.Countries.FindAsync(id);
+        return await context.Countries.FindAsync(id);
     }
 
-    public async Task Update(int id, Country entity)
+    public async Task<bool> Update(int id, Country entity)
     {
         var countryToUpdate = await GetById(id);
         if (countryToUpdate is null)
         {
-
+            return false;
         }
 
-        _sqlDataContext.Countries.Update(countryToUpdate);
-        await _sqlDataContext.SaveChangesAsync();
+        context.Countries.Update(countryToUpdate);
+        await context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<IEnumerable<Country>> GetCountriesByUserAsync(string UserId)
+    public async Task<IEnumerable<Country>>? GetCountriesByUserAsync(string UserId)
     {
-        var user = await _sqlDataContext.TravelsoUsers
+        var user = await context.TravelsoUsers
             .Include(u => u.MyVisitedCountries)
             .FirstOrDefaultAsync(u => u.UserId == UserId);
 

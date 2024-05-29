@@ -9,8 +9,12 @@ public class Comment
 
     public string comment { get; set; }
 
-    public TravelsoUser TravelsoUser { get; set; }
+    public string TravelsoUser { get; set; }
+
+    public int BlogPostId { get; set; }
 
     public DateTime publicationDate { get; set; }
+
+
 
 }

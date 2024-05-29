@@ -3,51 +3,63 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_TravelWebsite.Services;
 
-public class DestinationService : IDestinationService
+public class DestinationService(IHttpClientFactory factory) : IDestinationService
 {
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient = factory.CreateClient("Travelso-Api");
 
-    public DestinationService(IHttpClientFactory factory)
+    public async Task<IEnumerable<Destination>?> GetAll()
     {
-        _httpClient = factory.CreateClient("");
-    }
-
-    public async Task<IEnumerable<Destination>> GetAll()
-    {
-        var response = await _httpClient.GetAsync("/destination");
+        var response = await _httpClient.GetAsync($"/destination");
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<List<Destination>>();
+            return await response.Content.ReadFromJsonAsync<Destination[]>();
         }
-        throw new ApplicationException("Failed to retrieve users");
+
+        return null;
 
     }
 
-    public async Task Add(Destination entity)
+    public async Task<bool> Add(Destination entity)
     {
-        await _httpClient.PostAsJsonAsync("/destination", entity);
+       var response = await _httpClient.PostAsJsonAsync($"/destination", entity);
+       if (response.IsSuccessStatusCode)
+       {
+           return true;
+       }
+       return false;
+
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        await _httpClient.DeleteAsync($"/destination/{id}");
+      var response = await _httpClient.DeleteAsync($"/destination/destinationId/{id}");
+      if (response.IsSuccessStatusCode)
+      {
+          return true;
+      }
+      return false;
     }
 
     public async Task<Destination> GetById(int id)
     {
-       var response = await _httpClient.GetAsync($"/destination/{id}");
+       var response = await _httpClient.GetAsync($"/destination/destinationId/{id}");
 
        if (response.IsSuccessStatusCode)
        {
            return await response.Content.ReadFromJsonAsync<Destination>();
        }
-
-       throw new ApplicationException("Failed to retrieve users");
+        
+       return null;
 
     }
 
-    public Task Update(int id, Destination entity)
+    public async Task<bool> Update(int id, Destination entity)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.PutAsJsonAsync($"/destination/destination/{id}", entity);
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+        return false;
     }
 }

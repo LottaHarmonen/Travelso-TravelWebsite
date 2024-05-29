@@ -9,41 +9,76 @@ public class BlogPostService : IBlogPostService
 
     public BlogPostService(IHttpClientFactory factory)
     {
-        _httpClient = factory.CreateClient("");
+        _httpClient = factory.CreateClient("Travelso-Api");
     }
 
-    public Task<IEnumerable<BlogPost>> GetAll()
+    public async Task<IEnumerable<BlogPost>?> GetAll()
+    {
+        var response = await _httpClient.GetAsync("/blogpost");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<BlogPost[]>();
+        }
+
+        return null;
+
+    }
+
+    public async Task<bool> Add(BlogPost entity)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/blogPost", entity);
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        var response = await _httpClient.DeleteAsync($"/blogpost/blogPostId/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<BlogPost?> GetById(int id)
+    {
+        var response = await _httpClient.GetAsync($"/blogPost/blogPostId/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<BlogPost>();
+        }
+        return null;
+    }
+
+    public async Task<bool> Update(int id, BlogPost entity)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"/blogPost/blogPostId/{id}", entity);
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<IEnumerable<BlogPost>?> GetPostsByCountryAsync(int countryId)
+    {
+        var response = await _httpClient.GetAsync($"/blogpost/countryId/{countryId}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<BlogPost[]>();
+        }
+        return null;
+    }
+
+    public Task<IEnumerable<BlogPost>> PostsByUserAsync(string userId)
     {
         throw new NotImplementedException();
     }
 
-    public Task Add(BlogPost entity)
-    {
-        throw new NotImplementedException();
-    }
 
-    public Task Delete(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BlogPost> GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task Update(int id, BlogPost entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<BlogPost>> GetPostsByCountryAsync(int countryId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<BlogPost>> PostByUserAsync(int userId)
-    {
-        throw new NotImplementedException();
-    }
 }

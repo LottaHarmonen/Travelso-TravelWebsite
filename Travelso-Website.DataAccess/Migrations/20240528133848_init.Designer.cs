@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travelso_Website.DataAccess;
 
@@ -11,9 +12,11 @@ using Travelso_Website.DataAccess;
 namespace Travelso_Website.DataAccess.Migrations
 {
     [DbContext(typeof(TravelsoSQLDataContext))]
-    partial class TravelsoSQLDataContextModelSnapshot : ModelSnapshot
+    [Migration("20240528133848_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +88,7 @@ namespace Travelso_Website.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
 
-                    b.Property<int>("BlogPostId")
+                    b.Property<int?>("BlogPostId")
                         .HasColumnType("int");
 
                     b.Property<string>("TravelsoUser")
@@ -204,9 +207,7 @@ namespace Travelso_Website.DataAccess.Migrations
                 {
                     b.HasOne("Travelso_Website_Shared.Entities.BlogPost", null)
                         .WithMany("Comments")
-                        .HasForeignKey("BlogPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BlogPostId");
                 });
 
             modelBuilder.Entity("Travelso_Website_Shared.Entities.Destination", b =>

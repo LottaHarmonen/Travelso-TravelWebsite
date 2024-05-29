@@ -70,10 +70,11 @@ namespace Travelso_Website.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TravelsoUserUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TravelsoUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PublishedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HtmlContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CountryId = table.Column<int>(type: "int", nullable: false)
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    TravelsoUserUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -82,8 +83,7 @@ namespace Travelso_Website.DataAccess.Migrations
                         name: "FK_BlogPosts_TravelsoUsers_TravelsoUserUserId",
                         column: x => x.TravelsoUserUserId,
                         principalTable: "TravelsoUsers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -117,7 +117,7 @@ namespace Travelso_Website.DataAccess.Migrations
                     CommentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TravelsoUserUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TravelsoUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     publicationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BlogPostId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -129,12 +129,6 @@ namespace Travelso_Website.DataAccess.Migrations
                         column: x => x.BlogPostId,
                         principalTable: "BlogPosts",
                         principalColumn: "BlogPostId");
-                    table.ForeignKey(
-                        name: "FK_Comments_TravelsoUsers_TravelsoUserUserId",
-                        column: x => x.TravelsoUserUserId,
-                        principalTable: "TravelsoUsers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -146,11 +140,6 @@ namespace Travelso_Website.DataAccess.Migrations
                 name: "IX_Comments_BlogPostId",
                 table: "Comments",
                 column: "BlogPostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comments_TravelsoUserUserId",
-                table: "Comments",
-                column: "TravelsoUserUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CountryTravelsoUser_TravelsoUsersUserId",

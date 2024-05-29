@@ -1,4 +1,5 @@
-﻿using Travelso_Website_Shared.Entities;
+﻿using Travelso_Website.DataAccess.Repositories;
+using Travelso_Website_Shared.Entities;
 
 namespace Travlso_Website.API.Extensions;
 
@@ -8,48 +9,69 @@ public static class UserEndpointExtension
     {
         var group = app.MapGroup("/users");
 
-        //group.MapGet("/", GetAllUsers);
-        //group.MapGet("/{userId}", GetUserById);
-        //group.MapGet("/email/{userEmail}", GetUserByEmail);
-        //group.MapPost("/", AddUser);
-        //group.MapPut("/{userId}", UpdateUser);
-        //group.MapDelete("/{userId}", DeleteUser);
+        group.MapGet("/", GetAllUsers);
+        group.MapGet("/{userId}", GetUserById);
+        group.MapPost("/", AddUser);
+        group.MapPut("/{userId}", UpdateUser);
+        group.MapDelete("/{userId}", DeleteUser);
 
         return app;
     }
 
-    //private static async Task<IResult> GetAllUsers(IUserService<TravelsoUser> repo)
-    //{
-    //    var allUsers = await repo.GetAllUsers();
-    //    return Results.Ok(allUsers);
-    //}
-    //private static async Task<TravelsoUser?> GetUserById(IUserService<TravelsoUser> repo, string userId)
-    //{
-    //    return await repo.GetUserById(userId);
-    //}
-    //private static async Task<IResult> GetUserByEmail(IUserService<TravelsoUser> repo, string userEmail)
-    //{
-    //    var TravelsoUser = await repo.GetUserByEmail(userEmail);
+    private static async Task UpdateUser(UserRepository repo, TravelsoUser user, string userId)
+    {
+        var isUserUpdated = await repo.UpdateUserWithId(userId, user);
+        if (isUserUpdated)
+        {
+            Results.Ok();
+        }
 
-    //    if (TravelsoUser is null)
-    //    {
-    //        return Results.NotFound($"No product exists with the given number: {TravelsoUser}");
-    //    }
+        Results.NotFound();
+    }
 
-    //    return Results.Ok(TravelsoUser);
-    //}
-    //private static async Task AddUser(IUserService<TravelsoUser> repo, TravelsoUser newUser)
-    //{
-    //    await repo.AddUser(newUser);
-    //}
+    private static async Task<IResult> DeleteUser(UserRepository repo, string userId)
+    {
+        var isUserDeleted = await repo.DeleteUserWithId(userId);
+        if (isUserDeleted)
+        {
+           return Results.Ok();
+        }
 
-    //private static async Task<IResult> UpdateUser(IUserService<TravelsoUser> repo, string userId, TravelsoUser TravelsoUser)
-    //{
-    //    return Results.Ok(await repo.UpdateUser(userId, TravelsoUser));
-    //}
-    //private static async Task DeleteUser(IUserService<TravelsoUser> repo, string userId)
-    //{
-    //    await repo.RemoveUser(userId);
-    //}
+        return Results.BadRequest();
+    }
+
+    private static async Task AddUser(UserRepository repo, TravelsoUser user)
+    {
+        var isUserAdded = await repo.Add(user);
+        if (isUserAdded)
+        {
+            Results.Ok();
+        }
+
+        Results.BadRequest();
+    }
+
+    private static async Task<TravelsoUser?> GetUserById(UserRepository repo, string userId)
+    {
+        var user = await repo.GetUserWithId(userId);
+        if (user is null)
+        {
+            Results.NotFound($"No user found with the given id {userId}");
+        }
+        Results.Ok();
+        return user;
+    }
+
+    private static async Task<IEnumerable<TravelsoUser>?> GetAllUsers(UserRepository repo)
+    {
+        var allUsers = await repo.GetAll();
+        if (allUsers is null)
+        {
+            Results.NotFound();
+        }
+
+        Results.Ok();
+        return allUsers;
+    }
 }
 

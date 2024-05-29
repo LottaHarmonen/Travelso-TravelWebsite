@@ -4,51 +4,50 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_Website.DataAccess.Repositories;
 
-public class DestinationRepository : IDestinationService
+public class DestinationRepository(TravelsoSQLDataContext context) : IDestinationService
 {
-    private readonly TravelsoSQLDataContext _sqlDataContext;
-
-    public DestinationRepository(TravelsoSQLDataContext context)
+    public async Task<IEnumerable<Destination>?> GetAll()
     {
-        _sqlDataContext = context;
-    }
-    public async Task<IEnumerable<Destination>> GetAll()
-    {
-        return await _sqlDataContext.Destinations.ToListAsync();
+        return await context.Destinations.ToListAsync();
     }
 
-    public async Task Add(Destination entity)
+    public async Task<bool> Add(Destination entity)
     {
-        await _sqlDataContext.Destinations.AddAsync(entity);
-        await _sqlDataContext.SaveChangesAsync();
+        await context.Destinations.AddAsync(entity);
+        await context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         var destination = await GetById(id);
         if (destination == null)
         {
-
+            return false;
         }
 
-        _sqlDataContext.Destinations.Remove(destination);
-        await _sqlDataContext.SaveChangesAsync();
+        context.Destinations.Remove(destination);
+        await context.SaveChangesAsync();
+        return true;
     }
 
     public async Task<Destination> GetById(int id)
     {
-        return await _sqlDataContext.Destinations.FindAsync(id);
+        return await context.Destinations.FindAsync(id);
     }
 
-    public async Task Update(int id, Destination entity)
+    public async Task<bool> Update(int id, Destination entity)
     {
         var destinationToUpdate = await GetById(id);
         if (destinationToUpdate == null)
         {
-
+            return false;
         }
 
-        _sqlDataContext.Destinations.Update(entity);
-        await _sqlDataContext.SaveChangesAsync();
+        context.Destinations.Update(entity);
+        await context.SaveChangesAsync();
+        return true;
     }
+
+
 }

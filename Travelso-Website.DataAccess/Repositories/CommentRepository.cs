@@ -4,47 +4,61 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_Website.DataAccess.Repositories;
 
-public class CommentRepository : ICommentService
+public class CommentRepository(TravelsoSQLDataContext context) : ICommentService
 {
-    private readonly TravelsoSQLDataContext _sqlDataContext;
-
-    public CommentRepository(TravelsoSQLDataContext context)
-    {
-        _sqlDataContext = context;
-    }
     public async Task<IEnumerable<Comment>> GetAll()
     {
-       return await _sqlDataContext.Comments.ToListAsync();
+       return await context.Comments.ToListAsync();
     }
 
-    public async Task Add(Comment entity)
+    public async Task<bool> Add(Comment entity)
     {
-        await _sqlDataContext.Comments.AddAsync(entity);
+        await context.Comments.AddAsync(entity);
+        await context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         var commentToDelete = await GetById(id);
-        _sqlDataContext.Comments.Remove(commentToDelete);
-        await _sqlDataContext.SaveChangesAsync();
+        if (commentToDelete is null)
+        {
+            return false;
+        }
+        context.Comments.Remove(commentToDelete);
+        await context.SaveChangesAsync();
+        return true;
     }
 
     public async Task<Comment> GetById(int id)
     {
-       return await _sqlDataContext.Comments.FindAsync(id);
+       return await context.Comments.FindAsync(id);
     }
 
-    public async Task Update(int id, Comment entity)
+    public async Task<bool> Update(int id, Comment entity)
     {
         var commentToUpdate = await GetById(id);
-        _sqlDataContext.Comments.Update(commentToUpdate);
-        await _sqlDataContext.SaveChangesAsync();
+        if (commentToUpdate is null)
+        {
+            return false;
+        }
+        context.Comments.Update(commentToUpdate);
+        await context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<IEnumerable<Comment>> CommentsByBlogPost(int blogPostId)
+    public async Task<IEnumerable<Comment>?>? CommentsByBlogPost(int blogPostId)
     {
-        var blogpost = await _sqlDataContext.BlogPosts.FindAsync(blogPostId);
-        return blogpost.Comments;
+        var blogpost = await context.BlogPosts.FindAsync(blogPostId);
+        if (blogpost is null)
+        {
+            return null;
+        }
+
+        //get all comments with that id
+        var comments = context.Comments.Where(c => c.BlogPostId == blogPostId);
+
+        return comments;
 
     }
 }

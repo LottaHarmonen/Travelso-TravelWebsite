@@ -12,8 +12,8 @@ using Travelso_Website.DataAccess;
 namespace Travelso_Website.DataAccess.Migrations
 {
     [DbContext(typeof(TravelsoSQLDataContext))]
-    [Migration("20240524120618_init")]
-    partial class init
+    [Migration("20240528134347_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,8 +66,11 @@ namespace Travelso_Website.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TravelsoUserUserId")
+                    b.Property<string>("TravelsoUser")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TravelsoUserUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("BlogPostId");
@@ -85,12 +88,12 @@ namespace Travelso_Website.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
 
-                    b.Property<int?>("BlogPostId")
+                    b.Property<int>("BlogPostId")
                         .HasColumnType("int");
 
-                    b.Property<string>("TravelsoUserUserId")
+                    b.Property<string>("TravelsoUser")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("comment")
                         .IsRequired()
@@ -102,8 +105,6 @@ namespace Travelso_Website.DataAccess.Migrations
                     b.HasKey("CommentId");
 
                     b.HasIndex("BlogPostId");
-
-                    b.HasIndex("TravelsoUserUserId");
 
                     b.ToTable("Comments");
                 });
@@ -197,28 +198,18 @@ namespace Travelso_Website.DataAccess.Migrations
 
             modelBuilder.Entity("Travelso_Website_Shared.Entities.BlogPost", b =>
                 {
-                    b.HasOne("Travelso_Website_Shared.Entities.TravelsoUser", "TravelsoUser")
+                    b.HasOne("Travelso_Website_Shared.Entities.TravelsoUser", null)
                         .WithMany("BlogPosts")
-                        .HasForeignKey("TravelsoUserUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TravelsoUser");
+                        .HasForeignKey("TravelsoUserUserId");
                 });
 
             modelBuilder.Entity("Travelso_Website_Shared.Entities.Comment", b =>
                 {
                     b.HasOne("Travelso_Website_Shared.Entities.BlogPost", null)
                         .WithMany("Comments")
-                        .HasForeignKey("BlogPostId");
-
-                    b.HasOne("Travelso_Website_Shared.Entities.TravelsoUser", "TravelsoUser")
-                        .WithMany()
-                        .HasForeignKey("TravelsoUserUserId")
+                        .HasForeignKey("BlogPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("TravelsoUser");
                 });
 
             modelBuilder.Entity("Travelso_Website_Shared.Entities.Destination", b =>

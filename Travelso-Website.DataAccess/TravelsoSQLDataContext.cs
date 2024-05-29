@@ -6,7 +6,7 @@ namespace Travelso_Website.DataAccess;
 public class TravelsoSQLDataContext : DbContext
 {
     public DbSet<BlogPost> BlogPosts { get; set; }
-    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Comment?> Comments { get; set; }
 
     public DbSet<Country> Countries { get; set; }
     public DbSet<Destination> Destinations { get; set; }

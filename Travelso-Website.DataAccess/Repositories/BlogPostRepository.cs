@@ -18,50 +18,53 @@ public class BlogPostRepository : IBlogPostService
         return await _sqlDataContext.BlogPosts.ToListAsync();
     }
 
-    public async Task Add(BlogPost entity)
+    public async Task<bool> Add(BlogPost entity)
     {
         await _sqlDataContext.BlogPosts.AddAsync(entity);
         await _sqlDataContext.SaveChangesAsync();
+        return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var BlogPostToDelete = await GetById(id);
-        if (BlogPostToDelete == null)
+        var blogPostToDelete = await GetById(id);
+        if (blogPostToDelete == null)
         {
-
+            return false;
         }
 
-        _sqlDataContext.BlogPosts.Remove(BlogPostToDelete);
+        _sqlDataContext.BlogPosts.Remove(blogPostToDelete);
         await _sqlDataContext.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<BlogPost> GetById(int id)
+
+    public async Task<BlogPost?> GetById(int id)
     {
         return await _sqlDataContext.BlogPosts.FindAsync(id);
     }
 
-    public async Task Update(int id, BlogPost entity)
+    public async Task<bool> Update(int id, BlogPost entity)
     {
-        var BlogPostToUpdate = await GetById(id);
-        if (BlogPostToUpdate == null)
+        var blogPostToUpdate = await GetById(id);
+        if (blogPostToUpdate == null)
         {
-
+            return false;
         }
 
-        _sqlDataContext.BlogPosts.Update(BlogPostToUpdate);
+        _sqlDataContext.BlogPosts.Update(blogPostToUpdate);
         await _sqlDataContext.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<IEnumerable<BlogPost>> GetPostsByCountryAsync(int countryId)
+    public async Task<IEnumerable<BlogPost>?> GetPostsByCountryAsync(int countryId)
     {
         return _sqlDataContext.BlogPosts.Where(b => b.CountryId == countryId);
-
     }
 
     public async Task<IEnumerable<BlogPost>> PostsByUserAsync(string userId)
     {
         var user = await _sqlDataContext.TravelsoUsers.FindAsync(userId);
-        return _sqlDataContext.BlogPosts.Where(b => b.TravelsoUser.UserId == userId);
+        return _sqlDataContext.BlogPosts.Where(b => b.TravelsoUser == userId);
     }
 }

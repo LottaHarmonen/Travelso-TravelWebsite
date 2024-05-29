@@ -5,6 +5,7 @@ using Travelso_TravelWebsite.Components;
 using Travelso_TravelWebsite.Components.Account;
 using Travelso_TravelWebsite.Data;
 using Syncfusion.Blazor;
+using Travelso_TravelWebsite.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +21,6 @@ builder.Services.AddRazorComponents()
 //    });
 
 
-
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
@@ -32,6 +32,17 @@ builder.Services.AddSyncfusionBlazor();
 //        options.UseShowTheme = true;
 //    });
 
+
+builder.Services.AddScoped<BlogPostService>();
+builder.Services.AddScoped<DestinationService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<CountryService>();
+
+builder.Services.AddHttpClient("Travelso-Api", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7027");
+});
 
 builder.Services.AddAuthentication(options =>
     {

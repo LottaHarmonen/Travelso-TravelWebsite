@@ -5,53 +5,47 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_Website.DataAccess.Repositories;
 
-public class UserRepository : IUserService
+public class UserRepository(TravelsoSQLDataContext context) : IUserService
 {
-    private readonly TravelsoSQLDataContext _sqlDataContext;
-
-    public UserRepository(TravelsoSQLDataContext context)
-    {
-        _sqlDataContext = context;
-    }
-
     public async Task<IEnumerable<TravelsoUser>> GetAll()
     {
-      return await _sqlDataContext.TravelsoUsers.ToListAsync();
+      return await context.TravelsoUsers.ToListAsync();
     }
 
-    public async Task Add(TravelsoUser entity)
+    public async Task<bool> Add(TravelsoUser entity)
     {
-        await _sqlDataContext.TravelsoUsers.AddAsync(entity);
+      await context.TravelsoUsers.AddAsync(entity);
+      await context.SaveChangesAsync();
+      return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> UpdateUserWithId(string userId, TravelsoUser user)
     {
-        var user = await GetById(id);
+        var travelsoUser = await GetUserWithId(userId);
+        if (travelsoUser is null)
+        {
+            return false;
+        }
+        context.TravelsoUsers.Update(user);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<TravelsoUser>? GetUserWithId(string userId)
+    {
+        var user = await context.TravelsoUsers.FirstOrDefaultAsync(u => u.UserId == userId);
+        return user;
+    }
+
+    public async Task<bool> DeleteUserWithId(string userId)
+    {
+        var user = await GetUserWithId(userId);
         if (user == null)
         {
-            
+            return false;
         }
-        _sqlDataContext.TravelsoUsers.Remove(user);
-        await _sqlDataContext.SaveChangesAsync();
-    }
-
-    public async Task<TravelsoUser> GetById(int id)
-    {
-        return await _sqlDataContext.TravelsoUsers.FindAsync(id);
-    }
-
-    public async Task Update(int id, TravelsoUser entity)
-    {
-        var user = await GetById(id);
-        if (user is null)
-        {
-            return;
-        }
-
-        _sqlDataContext.TravelsoUsers.Update(user);
-        await _sqlDataContext.SaveChangesAsync();
-
-
-
+        context.TravelsoUsers.Remove(user);
+        await context.SaveChangesAsync();
+        return true;
     }
 }

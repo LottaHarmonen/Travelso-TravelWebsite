@@ -3,46 +3,69 @@ using Travelso_Website_Shared.Entities;
 using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_TravelWebsite.Services;
-public class UserService : IUserService
+public class UserService(IHttpClientFactory factory) : IUserService
 {
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient = factory.CreateClient("Travelso-Api");
 
-    public UserService(IHttpClientFactory factory)
-    {
-        _httpClient = factory.CreateClient("");
-    }
+    //TODO NAME
 
 
     public async Task<IEnumerable<TravelsoUser>> GetAll()
     {
         var response = await _httpClient.GetAsync("/users");
 
-        if (!response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
-            throw new ApplicationException("Failed to retrieve users");
+            var users = await response.Content.ReadFromJsonAsync<List<TravelsoUser>>();
+            return users;
         }
 
-        var users = await response.Content.ReadFromJsonAsync<List<TravelsoUser>>();
-        return users;
+        return null;
+
     }
 
-    public async Task Add(TravelsoUser entity)
+    public async Task<bool> Add(TravelsoUser entity)
     {
-        await _httpClient.PostAsJsonAsync("/users/", entity);
+       var response = await _httpClient.PostAsJsonAsync("/users/", entity);
+       if (response.IsSuccessStatusCode)
+       {
+           return true;
+       }
+
+       return false;
     }
 
-    public async Task Delete(int id)
+
+
+    public async Task<bool> UpdateUserWithId(string userId, TravelsoUser user)
     {
-        await _httpClient.DeleteAsync("/users");
+        var response = await _httpClient.PostAsJsonAsync("/users/", user);
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+        return false;
     }
 
-    public async Task<TravelsoUser> GetById(int id)
+    public async Task<TravelsoUser> GetUserWithId(string userId)
     {
-        return await _httpClient.GetFromJsonAsync<TravelsoUser>($"users/userId/{id}");
+
+        var user = await _httpClient.GetFromJsonAsync<TravelsoUser>($"users/userId/{userId}");
+        if (user is null)
+        {
+            return user;
+        }
+
+        return null;
     }
 
-    public async Task Update(int id, TravelsoUser entity)
+    public async Task<bool> DeleteUserWithId(string userId)
     {
-        await _httpClient.PostAsJsonAsync("/users/", entity);
+        var response = await _httpClient.DeleteAsync($"/users/userId/{userId}");
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+        return false;
     }
 }

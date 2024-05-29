@@ -1,5 +1,9 @@
 ﻿@page "/BlogPosts"
+@inject DestinationService DestinationService
+@inject BlogPostService BlogPostService
+@rendermode InteractiveServer
 @using Travelso_Website_Shared.Entities
+@using Travelso_TravelWebsite.Services
 
 
 
@@ -31,18 +35,21 @@
 
         <div class="cards-container">
             <div class="row">
-                @foreach (var post in allPosts)
-                {
+
+                <Virtualize Items="allPosts">
+
                     <div class="col-md-4 mb-3">
                         <div class="card">
-                            <img src="@post.ImageUrl" class="card-img-top" alt="Blog Post Image" />
+                            <img src="@context.ImageUrl" class="card-img-top" alt="Blog Post Image"/>
                             <div class="card-body">
-                                <h5 class="card-title">@post.Title</h5>
-                                <p class="card-text">Published on: @post.PublishedDate.ToShortDateString()</p>
+                                <h5 class="card-title">@context.Title</h5>
+                                <p class="card-text">Published on: @context.PublishedDate.ToShortDateString()</p>
                             </div>
                         </div>
                     </div>
-                }
+                
+                </Virtualize>
+                
             </div>
     </div>
 
@@ -58,72 +65,13 @@
 
 @code {
 
-    public List<BlogPost> allPosts = new()
+    public List<BlogPost> allPosts = new();
+
+    protected override async void OnInitialized()
     {
-        // new BlogPost
-        // {
-        //     UserId = 1,
-        //     Title = "Exploring Lisbon's Iconic Trams",
-        //     ImageUrl = "https://www.knorr-bremse.com/media/5000_magazin/2020/juni_1/strassenbahn_lissabon/variante_16x9_1920w.jpg",
-        //     HtmlContent = @"
-        //     <p>Lisbon's trams are an iconic feature of the city, weaving their way through narrow streets and steep hills.</p>
-        //     <img src='https://www.lisbon.net/f/portugal/lisboa/guia/tranvia.jpg' alt='Lisbon Tram' />
-        //     <p>They are not only a practical mode of transportation but also a nostalgic journey back in time.</p>
-        //     <p>From the vintage yellow trams to the modern red ones, each ride offers a unique experience of Lisbon's charm and history.</p>"
-        // },
-        // new BlogPost
-        // {
-        //     UserId = 1,
-        //     Title = "Discovering Porto's Riverside",
-        //     ImageUrl = "https://i.natgeofe.com/n/a418b667-c00b-417d-9ee5-32dfec838a8f/coverstory_portugal_GettyImages-533960357_HR.jpg",
-        //     HtmlContent = @"
-        //     <p>Porto's riverside is a picturesque area filled with historic buildings, charming cafes, and stunning views of the Douro River.</p>
-        //     <img src='https://www.visitportugal.com/sites/default/files/styles/encontre_experiencias_visitportugal_1_2/public/mediateca/Ribeira_Porto_AndreCarvalho.jpg' alt='Porto Riverside' />
-        //     <p>Take a leisurely stroll along the cobblestone streets, explore the colorful Ribeira district, and admire the iconic Dom Luís I Bridge.</p>"
-        // },
-        // new BlogPost
-        // {
-        //     UserId = 1,
-        //     Title = "Exploring Lisbon's Iconic Trams",
-        //     ImageUrl = "https://www.knorr-bremse.com/media/5000_magazin/2020/juni_1/strassenbahn_lissabon/variante_16x9_1920w.jpg",
-        //     HtmlContent = @"
-        //     <p>Lisbon's trams are an iconic feature of the city, weaving their way through narrow streets and steep hills.</p>
-        //     <img src='https://www.lisbon.net/f/portugal/lisboa/guia/tranvia.jpg' alt='Lisbon Tram' />
-        //     <p>They are not only a practical mode of transportation but also a nostalgic journey back in time.</p>
-        //     <p>From the vintage yellow trams to the modern red ones, each ride offers a unique experience of Lisbon's charm and history.</p>"
-        // },
-        // new BlogPost
-        // {
-        //     UserId = 1,
-        //     Title = "Discovering Porto's Riverside",
-        //     ImageUrl = "https://i.natgeofe.com/n/a418b667-c00b-417d-9ee5-32dfec838a8f/coverstory_portugal_GettyImages-533960357_HR.jpg",
-        //     HtmlContent = @"
-        //     <p>Porto's riverside is a picturesque area filled with historic buildings, charming cafes, and stunning views of the Douro River.</p>
-        //     <img src='https://www.visitportugal.com/sites/default/files/styles/encontre_experiencias_visitportugal_1_2/public/mediateca/Ribeira_Porto_AndreCarvalho.jpg' alt='Porto Riverside' />
-        //     <p>Take a leisurely stroll along the cobblestone streets, explore the colorful Ribeira district, and admire the iconic Dom Luís I Bridge.</p>"
-        // },
-        // new BlogPost
-        // {
-        //     UserId = 1,
-        //     Title = "Exploring Lisbon's Iconic Trams",
-        //     ImageUrl = "https://www.knorr-bremse.com/media/5000_magazin/2020/juni_1/strassenbahn_lissabon/variante_16x9_1920w.jpg",
-        //     HtmlContent = @"
-        //     <p>Lisbon's trams are an iconic feature of the city, weaving their way through narrow streets and steep hills.</p>
-        //     <img src='https://www.lisbon.net/f/portugal/lisboa/guia/tranvia.jpg' alt='Lisbon Tram' />
-        //     <p>They are not only a practical mode of transportation but also a nostalgic journey back in time.</p>
-        //     <p>From the vintage yellow trams to the modern red ones, each ride offers a unique experience of Lisbon's charm and history.</p>"
-        // },
-        // new BlogPost
-        // {
-        //     UserId = 1,
-        //     Title = "Discovering Porto's Riverside",
-        //     ImageUrl = "https://i.natgeofe.com/n/a418b667-c00b-417d-9ee5-32dfec838a8f/coverstory_portugal_GettyImages-533960357_HR.jpg",
-        //     HtmlContent = @"
-        //     <p>Porto's riverside is a picturesque area filled with historic buildings, charming cafes, and stunning views of the Douro River.</p>
-        //     <img src='https://www.visitportugal.com/sites/default/files/styles/encontre_experiencias_visitportugal_1_2/public/mediateca/Ribeira_Porto_AndreCarvalho.jpg' alt='Porto Riverside' />
-        //     <p>Take a leisurely stroll along the cobblestone streets, explore the colorful Ribeira district, and admire the iconic Dom Luís I Bridge.</p>"
-        // }
-    };
+        allPosts.AddRange(await BlogPostService.GetAll());
+        StateHasChanged();
+    }
 
 }
 

@@ -1,47 +1,81 @@
-﻿using System.Net.Http;
+﻿using Azure;
+using System.Net.Http;
 using Travelso_Website_Shared.Entities;
 using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_TravelWebsite.Services;
 
-public class CountryService : ICountryService
+public class CountryService(IHttpClientFactory factory) : ICountryService
 {
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient = factory.CreateClient("Travelso-Api");
 
-    public CountryService(IHttpClientFactory factory)
+
+    public async Task<IEnumerable<Country>> GetAll()
     {
-        _httpClient = factory.CreateClient("");
+        var response = await _httpClient.GetAsync($"/country");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<Country[]>();
+            
+        }
+        return Enumerable.Empty<Country>();
     }
 
+    public async Task<bool> Add(Country entity)
+    { 
+       var response = await _httpClient.PostAsJsonAsync("/country", entity);
+       if (response.IsSuccessStatusCode)
+       {
+           return true;
+       }
 
-    public Task<IEnumerable<Country>> GetAll()
-    {
-        throw new NotImplementedException();
+       return false;
     }
 
-    public Task Add(Country entity)
+    public async Task<bool> Delete(int id)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.DeleteAsync($"country/CountryId/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
     }
 
-    public Task Delete(int id)
+    public async Task<Country> GetById(int id)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.GetAsync($"country/CountryId/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<Country>();
+        }
+
+        return null;
+
     }
 
-    public Task<Country> GetById(int id)
+    public async Task<bool> Update(int id, Country entity)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.PutAsJsonAsync($"/country/CountryId/{id}", entity);
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
     }
 
-    public Task Update(int id, Country entity)
+    public async Task<IEnumerable<Country>>? GetCountriesByUserAsync(string UserId)
     {
-        throw new NotImplementedException();
-    }
+        var response = await _httpClient.GetAsync($"/country/Userid/{UserId}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<Country[]>();
+        }
 
-    public Task<IEnumerable<Country>> GetCountriesByUserAsync(string UserId)
-    {
-        throw new NotImplementedException();
+        return null;
     }
 
 }

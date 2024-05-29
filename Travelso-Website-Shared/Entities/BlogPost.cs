@@ -12,7 +12,7 @@ public class BlogPost
     public string ImageUrl { get; set; }
 
     [Required]
-    public TravelsoUser TravelsoUser { get; set; }
+    public string TravelsoUser { get; set; }
 
     [Required]
     public DateTime PublishedDate { get; set; }
@@ -23,5 +23,5 @@ public class BlogPost
     [Required]
     public int CountryId { get; set; }
 
-    public virtual ICollection<Comment> Comments { get; set; }
+    public virtual ICollection<Comment>? Comments { get; set; }
 }
