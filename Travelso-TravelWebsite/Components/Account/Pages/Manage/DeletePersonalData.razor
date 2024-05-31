@@ -23,7 +23,7 @@
 </div>
 
 <div>
-    <EditForm Model="Input" FormName="delete-TravelsoUser" OnValidSubmit="OnValidSubmitAsync" method="post">
+    <EditForm Model="Input" FormName="delete-BlogPostAuthorUser" OnValidSubmit="OnValidSubmitAsync" method="post">
         <DataAnnotationsValidator />
         <ValidationSummary class="text-danger" role="alert" />
         @if (requirePassword)
@@ -67,13 +67,13 @@
         var result = await UserManager.DeleteAsync(user);
         if (!result.Succeeded)
         {
-            throw new InvalidOperationException("Unexpected error occurred deleting TravelsoUser.");
+            throw new InvalidOperationException("Unexpected error occurred deleting BlogPostAuthorUser.");
         }
 
         await SignInManager.SignOutAsync();
 
         var userId = await UserManager.GetUserIdAsync(user);
-        Logger.LogInformation("TravelsoUser with ID '{UserId}' deleted themselves.", userId);
+        Logger.LogInformation("BlogPostAuthorUser with ID '{UserId}' deleted themselves.", userId);
 
         RedirectManager.RedirectToCurrentPage();
     }

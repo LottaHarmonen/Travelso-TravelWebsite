@@ -7,4 +7,5 @@ public interface IUserService
     public Task<bool> UpdateUserWithId(string userId, TravelsoUser user);
     public Task<TravelsoUser> GetUserWithId(string userId);
     public Task<bool> DeleteUserWithId(string userId);
+
 }

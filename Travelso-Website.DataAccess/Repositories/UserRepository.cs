@@ -12,6 +12,16 @@ public class UserRepository(TravelsoSQLDataContext context) : IUserService
       return await context.TravelsoUsers.ToListAsync();
     }
 
+    public async Task<TravelsoUser> GetUserByMail(string userMail)
+    {
+        var travelsoUser = await context.TravelsoUsers.FirstOrDefaultAsync(u => u.Email == userMail);
+        if (travelsoUser == null)
+        {
+            return null;
+        }
+        return travelsoUser;
+    }
+
     public async Task<bool> Add(TravelsoUser entity)
     {
       await context.TravelsoUsers.AddAsync(entity);

@@ -52,7 +52,7 @@ else
         if (user is null)
         {
             HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            statusMessage = "Error finding TravelsoUser for unspecified email";
+            statusMessage = "Error finding BlogPostAuthorUser for unspecified email";
         }
         else if (EmailSender is IdentityNoOpEmailSender)
         {

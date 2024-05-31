@@ -59,9 +59,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Ensure the TravelsoUser has gone through the username & password screen first
+        // Ensure the BlogPostAuthorUser has gone through the username & password screen first
         user = await SignInManager.GetTwoFactorAuthenticationUserAsync() ??
-            throw new InvalidOperationException("Unable to load two-factor authentication TravelsoUser.");
+            throw new InvalidOperationException("Unable to load two-factor authentication BlogPostAuthorUser.");
     }
 
     private async Task OnValidSubmitAsync()
@@ -72,17 +72,17 @@
 
         if (result.Succeeded)
         {
-            Logger.LogInformation("TravelsoUser with ID '{UserId}' logged in with 2fa.", userId);
+            Logger.LogInformation("BlogPostAuthorUser with ID '{UserId}' logged in with 2fa.", userId);
             RedirectManager.RedirectTo(ReturnUrl);
         }
         else if (result.IsLockedOut)
         {
-            Logger.LogWarning("TravelsoUser with ID '{UserId}' account locked out.", userId);
+            Logger.LogWarning("BlogPostAuthorUser with ID '{UserId}' account locked out.", userId);
             RedirectManager.RedirectTo("Account/Lockout");
         }
         else
         {
-            Logger.LogWarning("Invalid authenticator code entered for TravelsoUser with ID '{UserId}'.", userId);
+            Logger.LogWarning("Invalid authenticator code entered for BlogPostAuthorUser with ID '{UserId}'.", userId);
             message = "Error: Invalid authenticator code.";
         }
     }

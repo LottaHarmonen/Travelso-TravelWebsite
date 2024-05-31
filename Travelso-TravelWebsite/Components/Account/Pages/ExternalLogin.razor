@@ -98,7 +98,7 @@
 
     private async Task OnLoginCallbackAsync()
     {
-        // Sign in the TravelsoUser with this external login provider if the TravelsoUser already has a login.
+        // Sign in the BlogPostAuthorUser with this external login provider if the BlogPostAuthorUser already has a login.
         var result = await SignInManager.ExternalLoginSignInAsync(
             externalLoginInfo.LoginProvider,
             externalLoginInfo.ProviderKey,
@@ -118,7 +118,7 @@
             RedirectManager.RedirectTo("Account/Lockout");
         }
 
-        // If the TravelsoUser does not have an account, then ask the TravelsoUser to create an account.
+        // If the BlogPostAuthorUser does not have an account, then ask the BlogPostAuthorUser to create an account.
         if (externalLoginInfo.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
         {
             Input.Email = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email) ?? "";
@@ -139,7 +139,7 @@
             result = await UserManager.AddLoginAsync(user, externalLoginInfo);
             if (result.Succeeded)
             {
-                Logger.LogInformation("TravelsoUser created an account using {Name} provider.", externalLoginInfo.LoginProvider);
+                Logger.LogInformation("BlogPostAuthorUser created an account using {Name} provider.", externalLoginInfo.LoginProvider);
 
                 var userId = await UserManager.GetUserIdAsync(user);
                 var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
@@ -181,7 +181,7 @@
     {
         if (!UserManager.SupportsUserEmail)
         {
-            throw new NotSupportedException("The default UI requires a TravelsoUser store with email support.");
+            throw new NotSupportedException("The default UI requires a BlogPostAuthorUser store with email support.");
         }
         return (IUserEmailStore<ApplicationUser>)UserStore;
     }

@@ -4,7 +4,7 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_Website.DataAccess.Repositories;
 
-public class CommentRepository(TravelsoSQLDataContext context) : ICommentService
+public class CommentRepository(TravelsoSQLDataContext context) 
 {
     public async Task<IEnumerable<Comment>> GetAll()
     {

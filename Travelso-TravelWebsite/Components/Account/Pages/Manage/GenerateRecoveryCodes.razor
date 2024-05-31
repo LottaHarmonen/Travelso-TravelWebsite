@@ -53,7 +53,7 @@ else
         var isTwoFactorEnabled = await UserManager.GetTwoFactorEnabledAsync(user);
         if (!isTwoFactorEnabled)
         {
-            throw new InvalidOperationException("Cannot generate recovery codes for TravelsoUser because they do not have 2FA enabled.");
+            throw new InvalidOperationException("Cannot generate recovery codes for BlogPostAuthorUser because they do not have 2FA enabled.");
         }
     }
 
@@ -63,6 +63,6 @@ else
         recoveryCodes = await UserManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
         message = "You have generated new recovery codes.";
 
-        Logger.LogInformation("TravelsoUser with ID '{UserId}' has generated new 2FA recovery codes.", userId);
+        Logger.LogInformation("BlogPostAuthorUser with ID '{UserId}' has generated new 2FA recovery codes.", userId);
     }
 }

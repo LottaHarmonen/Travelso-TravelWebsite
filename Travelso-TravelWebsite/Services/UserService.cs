@@ -1,4 +1,6 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks.Sources;
+using Travelso_Website_Shared.DTOs.UserDTOs;
 using Travelso_Website_Shared.Entities;
 using Travelso_Website_Shared.Interfaces.IService;
 
@@ -24,7 +26,19 @@ public class UserService(IHttpClientFactory factory) : IUserService
 
     }
 
-    public async Task<bool> Add(TravelsoUser entity)
+    public async Task<TravelsoUser>? GetUserByMail(string userMail)
+    {
+        var response = await _httpClient.GetAsync($"/users/userMail/{userMail}");
+        if (response.IsSuccessStatusCode)
+        {
+            var travelsoUser = await response.Content.ReadFromJsonAsync<TravelsoUser>();
+            return travelsoUser;
+        }
+
+        return null;
+    }
+
+    public async Task<bool> Add(NewUserDTO entity)
     {
        var response = await _httpClient.PostAsJsonAsync("/users/", entity);
        if (response.IsSuccessStatusCode)
@@ -50,7 +64,7 @@ public class UserService(IHttpClientFactory factory) : IUserService
     public async Task<TravelsoUser> GetUserWithId(string userId)
     {
 
-        var user = await _httpClient.GetFromJsonAsync<TravelsoUser>($"users/userId/{userId}");
+        var user = await _httpClient.GetFromJsonAsync<TravelsoUser>($"users/{userId}");
         if (user is null)
         {
             return user;
@@ -61,7 +75,7 @@ public class UserService(IHttpClientFactory factory) : IUserService
 
     public async Task<bool> DeleteUserWithId(string userId)
     {
-        var response = await _httpClient.DeleteAsync($"/users/userId/{userId}");
+        var response = await _httpClient.DeleteAsync($"/users/{userId}");
         if (response.IsSuccessStatusCode)
         {
             return true;

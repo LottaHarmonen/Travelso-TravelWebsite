@@ -79,11 +79,11 @@ namespace Microsoft.AspNetCore.Routing
                 var user = await userManager.GetUserAsync(context.User);
                 if (user is null)
                 {
-                    return Results.NotFound($"Unable to load TravelsoUser with ID '{userManager.GetUserId(context.User)}'.");
+                    return Results.NotFound($"Unable to load BlogPostAuthorUser with ID '{userManager.GetUserId(context.User)}'.");
                 }
 
                 var userId = await userManager.GetUserIdAsync(user);
-                downloadLogger.LogInformation("TravelsoUser with ID '{UserId}' asked for their personal data.", userId);
+                downloadLogger.LogInformation("BlogPostAuthorUser with ID '{UserId}' asked for their personal data.", userId);
 
                 // Only include personal data for download
                 var personalData = new Dictionary<string, string>();

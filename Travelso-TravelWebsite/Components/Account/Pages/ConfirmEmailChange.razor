@@ -41,7 +41,7 @@
         var user = await UserManager.FindByIdAsync(UserId);
         if (user is null)
         {
-            message = "Unable to find TravelsoUser with Id '{userId}'";
+            message = "Unable to find BlogPostAuthorUser with Id '{userId}'";
             return;
         }
 
@@ -53,12 +53,12 @@
             return;
         }
 
-        // In our UI email and TravelsoUser name are one and the same, so when we update the email
-        // we need to update the TravelsoUser name.
+        // In our UI email and BlogPostAuthorUser name are one and the same, so when we update the email
+        // we need to update the BlogPostAuthorUser name.
         var setUserNameResult = await UserManager.SetUserNameAsync(user, Email);
         if (!setUserNameResult.Succeeded)
         {
-            message = "Error changing TravelsoUser name.";
+            message = "Error changing BlogPostAuthorUser name.";
             return;
         }
 

@@ -16,6 +16,16 @@
     <li class="nav-item">
         <NavLink class="nav-link" href="Account/Manage/MyCountries">World Map</NavLink>
     </li>
+    
+    <AuthorizeView Roles="ADMIN">
+        <Authorized>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="Account/Manage/AdminPage">Admin page</NavLink>
+            </li>
+        </Authorized>
+    </AuthorizeView>
+
+
     @if (hasExternalLogins)
     {
         <li class="nav-item">
@@ -24,8 +34,8 @@
     }
 @*     <li class="nav-item">
         <NavLink class="nav-link" href="Account/Manage/TwoFactorAuthentication">Two-factor authentication</NavLink>
-    </li>
-    <li class="nav-item">
+    </li> *@
+@*     <li class="nav-item">
         <NavLink class="nav-link" href="Account/Manage/PersonalData">Personal data</NavLink>
     </li> *@
 </ul>

@@ -17,19 +17,19 @@ namespace Travelso_TravelWebsite.Data
             base.OnModelCreating(builder);
             builder.Entity<ApplicationUser>(b =>
             {
-                // Each TravelsoUser can have many UserClaims
+                // Each BlogPostAuthorUser can have many UserClaims
                 b.HasMany(e => e.Claims)
                     .WithOne()
                     .HasForeignKey(uc => uc.UserId)
                     .IsRequired();
 
-                // Each TravelsoUser can have many UserLogins
+                // Each BlogPostAuthorUser can have many UserLogins
                 b.HasMany(e => e.Logins)
                     .WithOne()
                     .HasForeignKey(ul => ul.UserId)
                     .IsRequired();
 
-                // Each TravelsoUser can have many UserTokens
+                // Each BlogPostAuthorUser can have many UserTokens
                 b.HasMany(e => e.Tokens)
                     .WithOne()
                     .HasForeignKey(ut => ut.UserId)

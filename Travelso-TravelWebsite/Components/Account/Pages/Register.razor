@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using Travelso_TravelWebsite.Data
+@using Travelso_TravelWebsite.Services
 @using Travelso_Website_Shared.DTOs.UserDTOs
 
 @inject UserManager<ApplicationUser> UserManager
@@ -15,6 +16,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject UserService UserService
 
 <PageTitle>Register</PageTitle>
 
@@ -30,7 +32,7 @@
                 <hr />
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="TravelsoUsername" aria-required="true" placeholder="name@example.com" />
+                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="BlogPostAuthorUsername" aria-required="true" placeholder="name@example.com" />
                     <label for="email">Email</label>
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
@@ -85,7 +87,7 @@
             return;
         }
 
-        Logger.LogInformation("TravelsoUser created a new account with password.");
+        Logger.LogInformation("BlogPostAuthorUser created a new account with password.");
 
 
         var userId = await UserManager.GetUserIdAsync(user);
@@ -93,7 +95,7 @@
 
         newMainUser.UserId = userId;
         newMainUser.Email = Input.Email;
-        //await UserService.AddUser(newMainUser);
+        await UserService.Add(newMainUser);
 
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -131,7 +133,7 @@
     {
         if (!UserManager.SupportsUserEmail)
         {
-            throw new NotSupportedException("The default UI requires a TravelsoUser store with email support.");
+            throw new NotSupportedException("The default UI requires a BlogPostAuthorUser store with email support.");
         }
         return (IUserEmailStore<ApplicationUser>)UserStore;
     }

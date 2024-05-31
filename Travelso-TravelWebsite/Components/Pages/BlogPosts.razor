@@ -1,6 +1,7 @@
 ﻿@page "/BlogPosts"
 @inject DestinationService DestinationService
 @inject BlogPostService BlogPostService
+@inject CountryService CountryService
 @rendermode InteractiveServer
 @using Travelso_Website_Shared.Entities
 @using Travelso_TravelWebsite.Services
@@ -16,10 +17,12 @@
             <h3>Filter posts</h3>
             
             <hr/>
-            <select>
-                <option value="">Country</option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
+            <select class="form-control" @bind="SelectedCountry">
+                <option value="">Select a country</option>
+                @foreach (var country in AllCountries)
+                {
+                    <option value="@country.CountryId">@country.Name</option>
+                }
             </select>
             <select>
                 <option value="">Sort</option>
@@ -36,9 +39,10 @@
         <div class="cards-container">
             <div class="row">
 
-                <Virtualize Items="allPosts">
+                <Virtualize Items="AllPosts">
 
                     <div class="col-md-4 mb-3">
+                        <a href="@($"ViewBlogPost/{context.BlogPostId}")" style="text-decoration: none; color: inherit;">
                         <div class="card">
                             <img src="@context.ImageUrl" class="card-img-top" alt="Blog Post Image"/>
                             <div class="card-body">
@@ -46,8 +50,9 @@
                                 <p class="card-text">Published on: @context.PublishedDate.ToShortDateString()</p>
                             </div>
                         </div>
+                        </a>
                     </div>
-                
+
                 </Virtualize>
                 
             </div>
@@ -65,12 +70,40 @@
 
 @code {
 
-    public List<BlogPost> allPosts = new();
+    private int _selectedCountry;
+
+    public int SelectedCountry
+    {
+        get => _selectedCountry;
+        set
+        {
+            if (_selectedCountry != value)
+            {
+                _selectedCountry = value;
+                OnSelectedCountryChanged();
+            }
+        }
+    }
+
+    private void OnSelectedCountryChanged()
+    {
+        var posts = AllPosts.Where(b => b.CountryId == SelectedCountry);
+        AllPosts = posts.ToList();
+        StateHasChanged();
+    }
+
+
+    public List<Country> AllCountries = new();
+    public List<BlogPost> AllPosts = new();
+    
 
     protected override async void OnInitialized()
     {
-        allPosts.AddRange(await BlogPostService.GetAll());
+        AllPosts.AddRange(await BlogPostService.GetAll());
+        AllCountries.AddRange(await CountryService.GetAll());
+
         StateHasChanged();
+
     }
 
 }

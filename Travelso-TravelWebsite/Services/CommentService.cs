@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using Travelso_Website_Shared.DTOs.UserDTOs;
 using Travelso_Website_Shared.Entities;
 using Travelso_Website_Shared.Interfaces.IService;
 
@@ -64,12 +65,36 @@ public class CommentService(IHttpClientFactory factory) : ICommentService
     }
 
 
-    public async Task<IEnumerable<Comment>?>? CommentsByBlogPost(int blogPostId)
+    public async Task<List<UserCommentDTO>?>? CommentsByBlogPost(int blogPostId)
     {
         var response = await _httpClient.GetAsync($"/comment/blogPostId/{blogPostId}");
+        var listOfUserCommentDTOs = new List<UserCommentDTO>();
+
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<Comment[]>();
+            var comments = await response.Content.ReadFromJsonAsync<Comment[]>();
+
+            foreach (var comment in comments)
+            {
+                //get the user details 
+                var userResponse = await _httpClient.GetAsync($"users/{comment.TravelsoUser}");
+                if (userResponse.IsSuccessStatusCode)
+                {
+                    var user = await response.Content.ReadFromJsonAsync<TravelsoUser>();
+                    var commentUser = new UserCommentDTO()
+                    {
+                        BlogPostId = comment.BlogPostId,
+                        comment = comment.comment,
+                        CommentId = comment.CommentId,
+                        publicationDate = comment.publicationDate,
+                        userImageURL = user.ProfileImage,
+                        username = user.UserName
+                    };
+                    listOfUserCommentDTOs.Add(commentUser);
+                }
+            }
+
+            return listOfUserCommentDTOs;
         }
 
         return null;

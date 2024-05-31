@@ -11,11 +11,25 @@ public static class UserEndpointExtension
 
         group.MapGet("/", GetAllUsers);
         group.MapGet("/{userId}", GetUserById);
+        group.MapGet("/userMail/{userMail}", GetUserByMail);
         group.MapPost("/", AddUser);
         group.MapPut("/{userId}", UpdateUser);
         group.MapDelete("/{userId}", DeleteUser);
+        
 
         return app;
+    }
+
+    private static async Task<TravelsoUser?> GetUserByMail(UserRepository repo, string userMail)
+    {
+        var userByMail = await repo.GetUserByMail(userMail);
+        if (userByMail == null)
+        {
+            Results.NotFound();
+        }
+
+        Results.Ok();
+        return userByMail;
     }
 
     private static async Task UpdateUser(UserRepository repo, TravelsoUser user, string userId)
