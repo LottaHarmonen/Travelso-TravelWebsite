@@ -1,5 +1,7 @@
 .page {
     background: linear-gradient(135deg, #535353 0%, #827055 100%);
+    height: 100vh;
+    width: 100vw;
 }
 
 main {

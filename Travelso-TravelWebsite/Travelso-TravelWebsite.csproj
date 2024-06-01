@@ -28,6 +28,7 @@
     <_ContentIncludedByDefault Remove="Components\Pages\AdminPage.razor" />
     <_ContentIncludedByDefault Remove="Components\Pages\BlogPosts.razor" />
     <_ContentIncludedByDefault Remove="Components\Pages\CreateBlogPost.razor" />
+    <_ContentIncludedByDefault Remove="Components\Pages\UserInformation.razor" />
     <_ContentIncludedByDefault Remove="Components\Pages\ViewBlogPost.razor" />
   </ItemGroup>
 
@@ -49,6 +50,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Components\Pages\AdminPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\Pages\UserInformation.razor" />
   </ItemGroup>
 
 </Project>

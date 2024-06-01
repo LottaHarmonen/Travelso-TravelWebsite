@@ -85,9 +85,14 @@
         }
     }
 
-    private void OnSelectedCountryChanged()
+    private async Task OnSelectedCountryChanged()
     {
-        var posts = AllPosts.Where(b => b.CountryId == SelectedCountry);
+        var posts = await BlogPostService.GetAll();
+        posts = AllPosts.Where(b => b.CountryId == _selectedCountry);
+        if (posts is null)
+        {
+            return;
+        }
         AllPosts = posts.ToList();
         StateHasChanged();
     }
