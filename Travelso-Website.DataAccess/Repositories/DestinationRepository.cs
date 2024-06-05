@@ -4,7 +4,7 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_Website.DataAccess.Repositories;
 
-public class DestinationRepository(TravelsoSQLDataContext context) : IDestinationService
+public class DestinationRepository(TravelsoSQLDataContext context) 
 {
     public async Task<IEnumerable<Destination>?> GetAll()
     {

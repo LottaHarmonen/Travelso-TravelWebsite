@@ -5,7 +5,7 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_Website.DataAccess.Repositories;
 
-public class CountryRepository(TravelsoSQLDataContext context) : ICountryService
+public class CountryRepository(TravelsoSQLDataContext context) 
 {
     public async Task<IEnumerable<Country>>? GetAll()
     {

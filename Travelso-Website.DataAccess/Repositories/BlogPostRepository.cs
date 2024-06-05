@@ -4,7 +4,7 @@ using Travelso_Website_Shared.Interfaces.IService;
 
 namespace Travelso_Website.DataAccess.Repositories;
 
-public class BlogPostRepository : IBlogPostService
+public class BlogPostRepository
 {
     private readonly TravelsoSQLDataContext _sqlDataContext;
 

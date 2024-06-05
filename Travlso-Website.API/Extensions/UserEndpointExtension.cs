@@ -22,7 +22,7 @@ public static class UserEndpointExtension
 
     private static async Task<TravelsoUser?> GetUserByMail(UserRepository repo, string userMail)
     {
-        var userByMail = await repo.GetUserByMail(userMail);
+        var userByMail = await repo.GetByMail(userMail);
         if (userByMail == null)
         {
             Results.NotFound();
@@ -34,7 +34,7 @@ public static class UserEndpointExtension
 
     private static async Task UpdateUser(UserRepository repo, TravelsoUser user, string userId)
     {
-        var isUserUpdated = await repo.UpdateUserWithId(userId, user);
+        var isUserUpdated = await repo.Update(user);
         if (isUserUpdated)
         {
             Results.Ok();
@@ -45,7 +45,7 @@ public static class UserEndpointExtension
 
     private static async Task<IResult> DeleteUser(UserRepository repo, string userId)
     {
-        var isUserDeleted = await repo.DeleteUserWithId(userId);
+        var isUserDeleted = await repo.Delete(userId);
         if (isUserDeleted)
         {
            return Results.Ok();
@@ -67,7 +67,7 @@ public static class UserEndpointExtension
 
     private static async Task<TravelsoUser?> GetUserById(UserRepository repo, string userId)
     {
-        var user = await repo.GetUserWithId(userId);
+        var user = await repo.GetById(userId);
         if (user is null)
         {
             Results.NotFound($"No user found with the given id {userId}");
