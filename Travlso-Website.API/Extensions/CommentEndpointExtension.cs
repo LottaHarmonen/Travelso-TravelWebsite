@@ -37,7 +37,7 @@ public static class CommentEndpointExtension
 
     private static async Task UpdateComment(CommentRepository repo, int commentId, Comment comment)
     {
-        var IsCommentUpdated = await repo.Update(commentId, comment);
+        var IsCommentUpdated = await repo.Update(comment);
         if (IsCommentUpdated)
         {
             Results.Ok();
