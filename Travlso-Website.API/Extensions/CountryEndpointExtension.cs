@@ -53,7 +53,7 @@ public static class CountryEndpointExtension
         else
         {
 
-            var isCountryUpdated = await repo.Update(countryId, country);
+            var isCountryUpdated = await repo.Update(countryToUpdate);
             if (isCountryUpdated)
             {
                 Results.Ok();

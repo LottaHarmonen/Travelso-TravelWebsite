@@ -47,7 +47,7 @@ public static class DestinationEndpointExtension
     {
         var destinationToUpdate = await repo.GetById(destinationId);
 
-        var destinationFound = await repo.Update(destinationToUpdate.DestinationId, destination);
+        var destinationFound = await repo.Update(destinationToUpdate);
         if (destinationFound)
         {
             Results.Ok();

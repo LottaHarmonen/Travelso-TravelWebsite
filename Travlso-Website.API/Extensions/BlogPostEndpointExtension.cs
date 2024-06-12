@@ -35,7 +35,7 @@ public static class BlogPostEndpointExtension
 
     private static async Task UpdateBlogPost(BlogPostRepository repo, int blogPostId, BlogPost blogPost)
     {
-        var isBlogPostUpdated = await repo.Update(blogPostId, blogPost);
+        var isBlogPostUpdated = await repo.Update(blogPost);
         if (isBlogPostUpdated)
         {
             Results.Ok();
