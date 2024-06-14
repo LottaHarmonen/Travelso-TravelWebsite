@@ -67,10 +67,10 @@ public class UserService(IHttpClientFactory factory) : IUserService
         var user = await _httpClient.GetFromJsonAsync<TravelsoUser>($"users/{userId}");
         if (user is null)
         {
-            return user;
+            return null;
         }
 
-        return null;
+        return user;
     }
 
     public async Task<bool> DeleteUserWithId(string userId)

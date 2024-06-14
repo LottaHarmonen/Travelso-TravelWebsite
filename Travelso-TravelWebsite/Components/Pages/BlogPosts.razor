@@ -10,13 +10,10 @@
 
 
 <div class="BlogpostContainer">
-    
     <div class="containerFilterCard">
         <div class="filter">
-            
             <h3>Filter posts</h3>
-            
-            <hr/>
+            <hr />
             <select class="form-control" @bind="SelectedCountry">
                 <option value="">Select a country</option>
                 @foreach (var country in AllCountries)
@@ -29,48 +26,32 @@
                 <option value="option1">Newest to oldest</option>
                 <option value="option2">Most popular</option>
             </select>
-            
-
             <button style="margin: 20px" type="button" class="btn btn-info">Search</button>
             <button type="button" class="btn btn-info">Surprise me</button>
         </div>
-        
-
         <div class="cards-container">
             <div class="row">
-
-                <Virtualize Items="AllPosts">
-
+                <Virtualize Items="FilteredPosts">
                     <div class="col-md-4 mb-3">
                         <a href="@($"ViewBlogPost/{context.BlogPostId}")" style="text-decoration: none; color: inherit;">
-                        <div class="card">
-                            <img src="@context.ImageUrl" class="card-img-top" alt="Blog Post Image"/>
-                            <div class="card-body">
-                                <h5 class="card-title">@context.Title</h5>
-                                <p class="card-text">Published on: @context.PublishedDate.ToShortDateString()</p>
+                            <div class="card">
+                                <img src="@context.ImageUrl" class="card-img-top" alt="Blog Post Image" />
+                                <div class="card-body">
+                                    <h5 class="card-title">@context.Title</h5>
+                                    <p class="card-text">Published on: @context.PublishedDate.ToShortDateString()</p>
+                                </div>
                             </div>
-                        </div>
                         </a>
                     </div>
-
                 </Virtualize>
-                
             </div>
+        </div>
     </div>
-
-    
-
-</div>
-
-
-
-
-
 </div>
 
 @code {
-
     private int _selectedCountry;
+    private List<BlogPost> _allPosts = new();
 
     public int SelectedCountry
     {
@@ -85,31 +66,31 @@
         }
     }
 
+    public List<BlogPost> FilteredPosts { get; set; } = new();
+    public List<Country> AllCountries { get; set; } = new();
+
     private async Task OnSelectedCountryChanged()
     {
-        var posts = await BlogPostService.GetAll();
-        posts = AllPosts.Where(b => b.CountryId == _selectedCountry);
-        if (posts is null)
+        if (_selectedCountry == 0)
         {
-            return;
+            FilteredPosts = _allPosts.ToList();
         }
-        AllPosts = posts.ToList();
+        else
+        {
+            FilteredPosts = _allPosts.Where(b => b.CountryId == _selectedCountry).ToList();
+        }
+
         StateHasChanged();
     }
-
-
-    public List<Country> AllCountries = new();
-    public List<BlogPost> AllPosts = new();
-    
 
     protected override async void OnInitialized()
     {
-        AllPosts.AddRange(await BlogPostService.GetAll());
-        AllCountries.AddRange(await CountryService.GetAll());
+        _allPosts = ((await BlogPostService.GetAll())!).ToList();
+        AllCountries = (await CountryService.GetAll()).ToList();
 
+        FilteredPosts = _allPosts.ToList();
         StateHasChanged();
-
     }
-
 }
+
 

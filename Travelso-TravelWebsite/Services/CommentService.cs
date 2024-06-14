@@ -67,34 +67,13 @@ public class CommentService(IHttpClientFactory factory) : ICommentService
 
     public async Task<List<UserCommentDTO>?>? CommentsByBlogPost(int blogPostId)
     {
-        var response = await _httpClient.GetAsync($"/comment/blogPostId/{blogPostId}");
-        var listOfUserCommentDTOs = new List<UserCommentDTO>();
+        var response = await _httpClient.GetAsync($"/comment/blogPostId/{blogPostId}"); 
 
         if (response.IsSuccessStatusCode)
         {
-            var comments = await response.Content.ReadFromJsonAsync<Comment[]>();
+            var comments = await response.Content.ReadFromJsonAsync<UserCommentDTO[]>();
 
-            foreach (var comment in comments)
-            {
-                //get the user details 
-                var userResponse = await _httpClient.GetAsync($"users/{comment.TravelsoUser}");
-                if (userResponse.IsSuccessStatusCode)
-                {
-                    var user = await response.Content.ReadFromJsonAsync<TravelsoUser>();
-                    var commentUser = new UserCommentDTO()
-                    {
-                        BlogPostId = comment.BlogPostId,
-                        comment = comment.comment,
-                        CommentId = comment.CommentId,
-                        publicationDate = comment.publicationDate,
-                        userImageURL = user.ProfileImage,
-                        username = user.UserName
-                    };
-                    listOfUserCommentDTOs.Add(commentUser);
-                }
-            }
-
-            return listOfUserCommentDTOs;
+            return comments.ToList();
         }
 
         return null;
