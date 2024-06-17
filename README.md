@@ -7,6 +7,7 @@
 - Blog Post Creation: Authenticated users can create their own blog posts.
 - Commenting: Users can comment on each other's posts.
 - Country Sorting: Blog posts can be sorted by country.
+- Blog post administration: See all blogposts and have the ability to delete them as admin.
 
 ### Technologies Used
 - Blazor Server: For building interactive web UIs using C# with server-side rendering.
