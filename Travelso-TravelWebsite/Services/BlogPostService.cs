@@ -75,9 +75,15 @@ public class BlogPostService : IBlogPostService
         return null;
     }
 
-    public Task<IEnumerable<BlogPost>> PostsByUserAsync(string userId)
+    public async Task<IEnumerable<BlogPost>?> PostsByUserAsync(string userId)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.GetAsync($"/blogpost/userId/{userId}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<BlogPost[]>();
+        }
+
+        return null;
     }
 
 

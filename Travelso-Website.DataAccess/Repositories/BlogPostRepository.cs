@@ -29,6 +29,11 @@ public class BlogPostRepository : IBlogpostRepository
         return _sqlDataContext.BlogPosts.Where(b => b.CountryId == countryId);
     }
 
+    public async Task<IEnumerable<BlogPost>> GetPostsByUserId(string userId)
+    {
+        return _sqlDataContext.BlogPosts.Where(b => b.TravelsoUser == userId);
+    }
+
     public async Task<IEnumerable<BlogPost>?> PostsByUserAsync(string userId)
     {
         var user = await _sqlDataContext.TravelsoUsers.FindAsync(userId);

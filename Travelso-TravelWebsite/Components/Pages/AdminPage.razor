@@ -1,9 +1,12 @@
 ﻿@page "/Account/Manage/AdminPage"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @using Travelso_TravelWebsite.Services
 @using Travelso_Website_Shared.Entities
+@inject NavigationManager Navigation
 @inject UserService UserService
 @inject CountryService CountryService
+@inject BlogPostService BlogPostService
 @rendermode InteractiveServer
 
 
@@ -26,7 +29,7 @@
                            <div class="list-group">
                               
                                
-                               <Virtualize Items="allUsers">
+                               <Virtualize Items="AllUsers">
 
                                    <ItemContent Context="user">
                                        <div class="list-group-item" @onclick="() => SelectUser(user)">
@@ -46,6 +49,27 @@
 
                            <label for="userCountry">Country</label>
                            <input @bind="userCountry" type="text" class="form-control" id="userCountry" placeholder="Country">
+
+                            <label for="userCountry">City</label>
+                           <input @bind="userCity" type="text" class="form-control" id="userCity" placeholder="City">
+                           <br/>
+                            <label>Blog posts</label>
+                           <Virtualize Items="AllPostsByUser">
+
+                               <ItemContent Context="BlogPost">
+                                   <a href="@($"ViewBlogPost/{BlogPost.BlogPostId}")" style="text-decoration: none; color: inherit;">
+                                   <div class="list-group-item">
+                                       @BlogPost.Title
+                                   </div>
+                                   </a>
+                                   <br/>
+                                   <div>
+                                       <button class="btn btn-danger btn-sm" @onclick="() => RemovePost(BlogPost)">Remove</button>
+                                   </div>
+                                   <br/>
+                               </ItemContent>
+                           </Virtualize>
+
                        </div>
                    </form>
                    <br/>
@@ -55,7 +79,7 @@
                    
                    <select class="form-control">
                        <option value="">Select a country</option>
-                       @foreach (var country in allCountries)
+                       @foreach (var country in AllCountries)
                        {
                            <option value="@country.CountryId">@country.Name</option>
                        }
@@ -68,43 +92,6 @@
                    <br/>
                    <button type="submit" class="btn btn-primary" @onclick="(()=>AddNewCountry())">Add</button>
 
-                   @*                    <EditForm>
-                       <DataAnnotationsValidator />
-
-                       <div class="form-group">
-                           <label for="countryName">Country Name</label>
-                           <InputText id="countryName" class="form-control" />
-                       </div>
-
-                       <div class="form-group">
-                           <label for="flagUrl">Flag URL</label>
-                           <InputText id="flagUrl" class="form-control"  />
-                       </div>
-
-                       <button type="submit" class="btn btn-primary">Add</button>
-                   </EditForm> *@
-
-                   <br/>
-                   <hr/>
-                   
-
-                  @*  <form>
-                       <h3>Manage countries</h3>
-                       <div class="form-group">
-                           <label for="exampleInputEmail1">Email address</label>
-                           <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                           <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                       </div>
-                       <div class="form-group">
-                           <label for="exampleInputPassword1">Password</label>
-                           <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                       </div>
-                       <div class="form-check">
-                           <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                           <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                       </div>
-                       
-                   </form> *@
 
                </div>
            </div>
@@ -117,10 +104,12 @@
 
 @code {
 
-    List<TravelsoUser> allUsers = new List<TravelsoUser>();
-    List<Country> allCountries = new List<Country>();
+    List<TravelsoUser> AllUsers = new List<TravelsoUser>();
+    List<Country> AllCountries = new List<Country>();
+    List<BlogPost> AllPostsByUser = new List<BlogPost>();
     string userMail;
     string userCountry;
+    string userCity;
     string newCountryName;
     string newCountryFlagUrl;
 
@@ -131,20 +120,25 @@
     {
         //get all users
         var users = await UserService.GetAll();
-        allUsers = users.ToList();
+        AllUsers = users.ToList();
 
         var countries = await CountryService.GetAll();
-        allCountries = countries.ToList();
+        AllCountries = countries.ToList();
 
         
 
         await base.OnInitializedAsync();
     }
 
-    private void SelectUser(TravelsoUser user)
+    private async Task SelectUser(TravelsoUser user)
     {
         userMail = user.Email;
         userCountry = user.Country;
+        userCity = user.City;
+
+        //Get all posts by user
+        var allPostByUser = await BlogPostService.PostsByUserAsync(user.UserId);
+        AllPostsByUser = allPostByUser.ToList();
     }
 
     private async Task AddNewCountry()
@@ -159,5 +153,12 @@
         await CountryService.Add(newCountry);
         
     }
+
+    private async Task RemovePost(BlogPost blogPost)
+    {
+        await BlogPostService.Delete(blogPost.BlogPostId);
+    }
+
+
 
 }

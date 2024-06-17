@@ -14,11 +14,25 @@ public static class BlogPostEndpointExtension
         group.MapGet("/", GetAllBlogPosts);
         group.MapGet("/blogPostId/{blogPostId}", GetBlogPostById);
         group.MapGet("/countryId/{countryId}", GetBlogPostsByCountry);
+        group.MapGet("/userId/{userId}", GetBlogPostsByUserId);
         group.MapPost("/", AddBlogPost);
         group.MapPut("/blogPostId/{blogPostId}", UpdateBlogPost);
         group.MapDelete("/blogPostId/{blogPostId}", DeleteBlogPost);
 
         return app;
+    }
+
+    private static async Task<IEnumerable<BlogPost>> GetBlogPostsByUserId(BlogPostRepository repo, string userId)
+    {
+        var blogPosts = await repo.GetPostsByUserId(userId);
+        if (blogPosts is null)
+        {
+            Results.NotFound();
+            return null;
+        }
+
+        Results.Ok();
+        return blogPosts;
     }
 
     private static async Task DeleteBlogPost(BlogPostRepository repo, int blogPostId)
