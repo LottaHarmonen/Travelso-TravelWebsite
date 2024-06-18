@@ -51,9 +51,9 @@ public class UserService(IHttpClientFactory factory) : IUserService
 
 
 
-    public async Task<bool> UpdateUserWithId(string userId, TravelsoUser user)
+    public async Task<bool> UpdateUserWithId(string userId, UpdatedUserInformationDTO user)
     {
-        var response = await _httpClient.PostAsJsonAsync("/users/", user);
+        var response = await _httpClient.PutAsJsonAsync($"users/{userId}", user);
         if (response.IsSuccessStatusCode)
         {
             return true;

@@ -1,4 +1,6 @@
-﻿using Travelso_Website.DataAccess.Repositories;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Travelso_Website.DataAccess.Repositories;
+using Travelso_Website_Shared.DTOs.UserDTOs;
 using Travelso_Website_Shared.Entities;
 
 namespace Travlso_Website.API.Extensions;
@@ -32,8 +34,24 @@ public static class UserEndpointExtension
         return userByMail;
     }
 
-    private static async Task UpdateUser(UserRepository repo, TravelsoUser user, string userId)
+    private static async Task UpdateUser(UserRepository repo, UpdatedUserInformationDTO updatedUser, string userId)
     {
+        //get user with id
+        var userToUpdate = await repo.GetById(userId);
+
+        TravelsoUser user = new TravelsoUser()
+        {
+            UserId = userId,
+            City = updatedUser.City,
+            Country = updatedUser.Country,
+            ProfileImage = updatedUser.ProfileImage,
+            UserName = updatedUser.UserName,
+            BlogPosts = userToUpdate.BlogPosts,
+            MyVisitedCountries = userToUpdate.MyVisitedCountries,
+            Email = userToUpdate.Email
+
+        };
+
         var isUserUpdated = await repo.Update(user);
         if (isUserUpdated)
         {

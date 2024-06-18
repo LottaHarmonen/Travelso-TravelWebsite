@@ -23,7 +23,7 @@ public class UserRepository(TravelsoSQLDataContext context) : IUserRepository
         {
             return false;
         }
-        context.TravelsoUsers.Update(entity);
+        context.Entry(travelsoUser).CurrentValues.SetValues(entity);
         await context.SaveChangesAsync();
         return true;
     }

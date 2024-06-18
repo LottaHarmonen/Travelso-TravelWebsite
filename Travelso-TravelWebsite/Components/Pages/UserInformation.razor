@@ -1,16 +1,91 @@
 ﻿@page "/Account/Manage/UserInformation"
 @using Travelso_TravelWebsite.Services
+@using Travelso_Website_Shared.DTOs.UserDTOs
+@using Travelso_Website_Shared.Entities
+@using System.Security.Claims
 @rendermode InteractiveServer
 @inject UserService UserService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>UserInformation</h3>
-<AuthorizeView>
-    <Authorized>
 
-    </Authorized>
-</AuthorizeView>
+<div class="BlogpostContainer">
+
+
+    <div class="row row2" style="justify-content:center">
+        <div class="col-md-8 postManager">
+
+            <h3>Update your user information</h3>
+
+
+            @if (_isUpdated)
+            {
+            //show a message
+                <p class="alert alert-success" role="alert">User updated successfully</p>
+            }
+            <EditForm Model="@_mainUser" OnValidSubmit="UpdateUser">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group">
+                    <label for="UserName">Username</label>
+                    <InputText @bind-Value="_mainUser.UserName" class="form-control" />
+                    <ValidationMessage For="@(() => _mainUser.UserName)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="UserCity">City</label>
+                    <InputText @bind-Value="_mainUser.City" class="form-control" />
+                    <ValidationMessage For="@(() => _mainUser.City)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="UserCountry">Country</label>
+                    <InputText @bind-Value="_mainUser.Country" class="form-control" />
+                    <ValidationMessage For="@(() => _mainUser.Country)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="ProfileImage">Profile image</label>
+                    <InputText @bind-Value="_mainUser.ProfileImage" class="form-control" />
+                    <ValidationMessage For="@(() => _mainUser.ProfileImage)" />
+                </div>
+
+
+
+
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+
+        </div>
+    </div>
+
+
+</div>
 
 
 @code {
-    
+
+    bool _isUpdated = false;
+
+    readonly UpdatedUserInformationDTO _mainUser = new UpdatedUserInformationDTO();
+
+    private ClaimsPrincipal _user;
+    private string? _userId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _user = authState.User;
+        _userId = _user.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task UpdateUser()
+    {
+
+        await UserService.UpdateUserWithId(_userId!, _mainUser);
+        _isUpdated = true;
+    }
+
 }
