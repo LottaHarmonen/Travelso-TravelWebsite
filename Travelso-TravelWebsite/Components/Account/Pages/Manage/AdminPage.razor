@@ -1,0 +1,164 @@
+﻿@page "/Account/Manage/AdminPage"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Travelso_TravelWebsite.Services
+@using Travelso_Website_Shared.Entities
+@inject NavigationManager Navigation
+@inject UserService UserService
+@inject CountryService CountryService
+@inject BlogPostService BlogPostService
+@rendermode InteractiveServer
+
+
+@attribute [Authorize(Roles = "ADMIN")]
+
+<AuthorizeView>
+    <Authorized>
+
+
+        <div class="BlogpostContainer">
+
+
+            <div class="row row2" style="justify-content:center">
+                <div class="col-md-10 postManager">
+                    <form>
+                        <div class="form-group">
+                            <h3>Manage users</h3>
+
+                            <label for="exampleInputEmail1">All users</label>
+                            <div class="list-group">
+
+
+                                <Virtualize Items="AllUsers">
+
+                                    <ItemContent Context="user">
+                                        <div class="list-group-item" @onclick="() => SelectUser(user)">
+                                            @user.Email
+                                        </div>
+
+                                    </ItemContent>
+                                </Virtualize>
+
+
+                            </div>
+
+
+
+                            <label for="userEmail">Email</label>
+                            <input @bind="userMail" type="email" class="form-control" id="userEmail" placeholder="Email">
+
+                            <label for="userCountry">Country</label>
+                            <input @bind="userCountry" type="text" class="form-control" id="userCountry" placeholder="Country">
+
+                            <label for="userCountry">City</label>
+                            <input @bind="userCity" type="text" class="form-control" id="userCity" placeholder="City">
+                            <br />
+                            <label>Blog posts</label>
+                            <Virtualize Items="AllPostsByUser">
+
+                                <ItemContent Context="BlogPost">
+                                    <a href="@($"ViewBlogPost/{BlogPost.BlogPostId}")" style="text-decoration: none; color: inherit;">
+                                        <div class="list-group-item">
+                                            @BlogPost.Title
+                                        </div>
+                                    </a>
+                                    <br />
+                                    <div>
+                                        <button class="btn btn-danger btn-sm" @onclick="() => RemovePost(BlogPost)">Remove</button>
+                                    </div>
+                                    <br />
+                                </ItemContent>
+                            </Virtualize>
+
+                        </div>
+                    </form>
+                    <br />
+                    <hr />
+
+                    <label>Add countries</label>
+
+                    <select class="form-control">
+                        <option value="">Select a country</option>
+                        @foreach (var country in AllCountries)
+                        {
+                            <option value="@country.CountryId">@country.Name</option>
+                        }
+                    </select>
+                    <br />
+                    <input @bind="newCountryName" type="text" class="form-control" id="CountryName" placeholder="Country name">
+                    <br />
+
+                    <input @bind="newCountryFlagUrl" type="text" class="form-control" id="urlFlag" placeholder="Flag URL">
+                    <br />
+                    <button type="submit" class="btn btn-primary" @onclick="(()=>AddNewCountry())">Add</button>
+
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </Authorized>
+</AuthorizeView>
+
+@code {
+
+    List<TravelsoUser> AllUsers = new List<TravelsoUser>();
+    List<Country> AllCountries = new List<Country>();
+    List<BlogPost> AllPostsByUser = new List<BlogPost>();
+    string userMail;
+    string userCountry;
+    string userCity;
+    string newCountryName;
+    string newCountryFlagUrl;
+
+    bool countryAdded = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //get all users
+        var users = await UserService.GetAll();
+        AllUsers = users.ToList();
+
+        var countries = await CountryService.GetAll();
+        AllCountries = countries.ToList();
+
+
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task SelectUser(TravelsoUser user)
+    {
+        userMail = user.Email;
+        userCountry = user.Country;
+        userCity = user.City;
+
+        //Get all posts by user
+        var allPostByUser = await BlogPostService.PostsByUserAsync(user.UserId);
+        AllPostsByUser = allPostByUser.ToList();
+    }
+
+    private async Task AddNewCountry()
+    {
+        //create new country
+        Country newCountry = new Country()
+            {
+                Name = newCountryName,
+                ImageURL = newCountryFlagUrl
+            };
+
+        await CountryService.Add(newCountry);
+
+    }
+
+    private async Task RemovePost(BlogPost blogPost)
+    {
+        await BlogPostService.Delete(blogPost.BlogPostId);
+    }
+
+
+
+}

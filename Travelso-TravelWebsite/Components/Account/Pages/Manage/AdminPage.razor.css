@@ -1,0 +1,8 @@
+﻿body {
+}
+
+
+.list-group-item:hover {
+    cursor: pointer;
+    filter: brightness(0.7);
+}
