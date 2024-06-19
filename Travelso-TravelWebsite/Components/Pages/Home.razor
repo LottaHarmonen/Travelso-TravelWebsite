@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <div class="PageContainer">
 
@@ -7,7 +8,7 @@
         <div class="overlay-text">
             <h2 class="h2Welcome">Connect with other travelers, share and tell your stories</h2>
             <p class="pText">Connect, converse, and explore with fellow travelers. Document your adventures, share tips, and discover new horizons together!</p>
-            <button type="button" class="btn btn-info">Discover more</button>
+            <button type="button" class="btn btn-info" @onclick="NavigateToPage">Discover more</button>
         </div>
     </div>
 
@@ -33,4 +34,8 @@
 @code
 {
 
+    private void NavigateToPage()
+    {
+       NavigationManager.NavigateTo("/BlogPosts");
+    }
 }
