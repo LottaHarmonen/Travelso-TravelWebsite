@@ -10,7 +10,7 @@ public class CountryService(IHttpClientFactory factory) : ICountryService
     private readonly HttpClient _httpClient = factory.CreateClient("Travelso-Api");
 
 
-    public async Task<IEnumerable<Country>> GetAll()
+    public async Task<IEnumerable<Country>?> GetAll()
     {
         var response = await _httpClient.GetAsync($"/country");
         if (response.IsSuccessStatusCode)
@@ -43,7 +43,7 @@ public class CountryService(IHttpClientFactory factory) : ICountryService
         return false;
     }
 
-    public async Task<Country> GetById(int id)
+    public async Task<Country?> GetById(int id)
     {
         var response = await _httpClient.GetAsync($"country/CountryId/{id}");
 
@@ -67,9 +67,9 @@ public class CountryService(IHttpClientFactory factory) : ICountryService
         return false;
     }
 
-    public async Task<IEnumerable<Country>>? GetCountriesByUserAsync(string UserId)
+    public async Task<IEnumerable<Country>?> GetCountriesByUserAsync(string userId)
     {
-        var response = await _httpClient.GetAsync($"/country/Userid/{UserId}");
+        var response = await _httpClient.GetAsync($"/country/Userid/{userId}");
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<Country[]>();

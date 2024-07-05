@@ -7,14 +7,14 @@ namespace Travelso_Website.DataAccess.Repositories;
 
 public class CommentRepository(TravelsoSQLDataContext context) : ICommentRepository
 {
-    public async Task<Comment> GetById(object id)
+    public async Task<Comment?> GetById(object? id)
     {
-        return await context.Comments.FindAsync(id);
+        return (await context.Comments.FindAsync(id))!;
     }
 
-    public async Task<IEnumerable<Comment>> GetAll()
+    public async Task<IEnumerable<Comment>?> GetAll()
     {
-       return await context.Comments.ToListAsync();
+       return (await context.Comments.ToListAsync())!;
     }
 
     public async Task<IEnumerable<Comment>?>? CommentsByBlogPost(int blogPostId)
@@ -28,7 +28,7 @@ public class CommentRepository(TravelsoSQLDataContext context) : ICommentReposit
         //get all comments with that id
         var comments = context.Comments.Where(c => c.BlogPostId == blogPostId);
 
-        return comments;
+        return comments!;
 
     }
 
@@ -51,7 +51,7 @@ public class CommentRepository(TravelsoSQLDataContext context) : ICommentReposit
         return true;
     }
 
-    public async Task<bool> Delete(object id)
+    public async Task<bool> Delete(object? id)
     {
         var commentToDelete = await GetById(id);
         if (commentToDelete is null)

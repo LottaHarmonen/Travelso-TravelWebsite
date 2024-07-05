@@ -5,7 +5,7 @@ namespace Travelso_Website_Shared.Entities;
 public class TravelsoUser
 {
     [Key]
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
     public string? UserName { get; set; }
 
     [Required]

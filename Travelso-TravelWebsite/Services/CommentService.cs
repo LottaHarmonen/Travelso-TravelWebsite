@@ -42,7 +42,7 @@ public class CommentService(IHttpClientFactory factory) : ICommentService
         return false;
     }
 
-    public async Task<Comment>? GetById(int id)
+    public async Task<Comment?> GetById(int id)
     {
         var response = await _httpClient.GetAsync($"/comment/commentId/{id}");
         if (response.IsSuccessStatusCode)
@@ -73,7 +73,7 @@ public class CommentService(IHttpClientFactory factory) : ICommentService
         {
             var comments = await response.Content.ReadFromJsonAsync<UserCommentDTO[]>();
 
-            return comments.ToList();
+            return comments!.ToList();
         }
 
         return null;

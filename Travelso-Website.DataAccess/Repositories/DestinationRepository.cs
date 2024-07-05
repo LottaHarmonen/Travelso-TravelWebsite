@@ -13,7 +13,7 @@ public class DestinationRepository(TravelsoSQLDataContext context) : IDestinatio
         return await context.Destinations.ToListAsync();
     }
 
-    public async Task<Destination> GetById(object id)
+    public async Task<Destination?> GetById(object? id)
     {
         return await context.Destinations.FindAsync(id);
     }
@@ -38,7 +38,7 @@ public class DestinationRepository(TravelsoSQLDataContext context) : IDestinatio
         return true;
     }
 
-    public async Task<bool> Delete(object id)
+    public async Task<bool> Delete(object? id)
     {
         var destination = await GetById(id);
         if (destination == null)

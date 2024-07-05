@@ -26,7 +26,7 @@ public class UserService(IHttpClientFactory factory) : IUserService
 
     }
 
-    public async Task<TravelsoUser>? GetUserByMail(string userMail)
+    public async Task<TravelsoUser?> GetUserByMail(string userMail)
     {
         var response = await _httpClient.GetAsync($"/users/userMail/{userMail}");
         if (response.IsSuccessStatusCode)
@@ -61,7 +61,7 @@ public class UserService(IHttpClientFactory factory) : IUserService
         return false;
     }
 
-    public async Task<TravelsoUser> GetUserWithId(string userId)
+    public async Task<TravelsoUser?> GetUserWithId(string? userId)
     {
 
         var user = await _httpClient.GetFromJsonAsync<TravelsoUser>($"users/{userId}");

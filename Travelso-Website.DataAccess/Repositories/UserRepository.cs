@@ -28,7 +28,7 @@ public class UserRepository(TravelsoSQLDataContext context) : IUserRepository
         return true;
     }
 
-    public async Task<bool> Delete(object id)
+    public async Task<bool> Delete(object? id)
     {
         var user = await GetById(id);
         if (user == null)
@@ -40,13 +40,13 @@ public class UserRepository(TravelsoSQLDataContext context) : IUserRepository
         return true;
     }
 
-    public async Task<TravelsoUser> GetById(object id)
+    public async Task<TravelsoUser?> GetById(object? id)
     {
         var user = await context.TravelsoUsers.FirstOrDefaultAsync(u => u.UserId == id);
         return user;
     }
 
-    public async Task<IEnumerable<TravelsoUser>> GetAll()
+    public async Task<IEnumerable<TravelsoUser>?> GetAll()
     {
       return await context.TravelsoUsers.ToListAsync();
     }

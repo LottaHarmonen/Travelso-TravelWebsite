@@ -75,7 +75,7 @@ public class BlogPostService : IBlogPostService
         return null;
     }
 
-    public async Task<IEnumerable<BlogPost>?> PostsByUserAsync(string userId)
+    public async Task<IEnumerable<BlogPost>?> PostsByUserAsync(string? userId)
     {
         var response = await _httpClient.GetAsync($"/blogpost/userId/{userId}");
         if (response.IsSuccessStatusCode)

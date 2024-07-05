@@ -40,7 +40,7 @@ public class DestinationService(IHttpClientFactory factory) : IDestinationServic
       return false;
     }
 
-    public async Task<Destination> GetById(int id)
+    public async Task<Destination?> GetById(int id)
     {
        var response = await _httpClient.GetAsync($"/destination/destinationId/{id}");
 

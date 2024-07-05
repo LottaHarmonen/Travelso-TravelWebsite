@@ -12,7 +12,7 @@ public class BlogPost
     public string ImageUrl { get; set; }
 
     [Required]
-    public string TravelsoUser { get; set; }
+    public string? TravelsoUser { get; set; }
 
     [Required]
     public DateTime PublishedDate { get; set; }

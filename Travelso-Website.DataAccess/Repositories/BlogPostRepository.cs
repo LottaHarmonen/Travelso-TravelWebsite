@@ -14,12 +14,12 @@ public class BlogPostRepository : IBlogpostRepository
         _sqlDataContext = context;
     }
 
-    public async Task<BlogPost> GetById(object id)
+    public async Task<BlogPost?> GetById(object? id)
     {
         return await _sqlDataContext.BlogPosts.FindAsync(id);
     }
 
-    public async Task<IEnumerable<BlogPost>> GetAll()
+    public async Task<IEnumerable<BlogPost>?> GetAll()
     {
         return await _sqlDataContext.BlogPosts.ToListAsync();
     }
@@ -60,7 +60,7 @@ public class BlogPostRepository : IBlogpostRepository
         return true;
     }
 
-    public async Task<bool> Delete(object id)
+    public async Task<bool> Delete(object? id)
     {
         var blogPostToDelete = await GetById(id);
         if (blogPostToDelete == null)

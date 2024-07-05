@@ -34,7 +34,7 @@ public static class UserEndpointExtension
         return userByMail;
     }
 
-    private static async Task UpdateUser(UserRepository repo, UpdatedUserInformationDTO updatedUser, string userId)
+    private static async Task UpdateUser(UserRepository repo, UpdatedUserInformationDTO updatedUser, string? userId)
     {
         //get user with id
         var userToUpdate = await repo.GetById(userId);
@@ -61,7 +61,7 @@ public static class UserEndpointExtension
         Results.NotFound();
     }
 
-    private static async Task<IResult> DeleteUser(UserRepository repo, string userId)
+    private static async Task<IResult> DeleteUser(UserRepository repo, string? userId)
     {
         var isUserDeleted = await repo.Delete(userId);
         if (isUserDeleted)
@@ -83,7 +83,7 @@ public static class UserEndpointExtension
         Results.BadRequest();
     }
 
-    private static async Task<TravelsoUser?> GetUserById(UserRepository repo, string userId)
+    private static async Task<TravelsoUser?> GetUserById(UserRepository repo, string? userId)
     {
         var user = await repo.GetById(userId);
         if (user is null)

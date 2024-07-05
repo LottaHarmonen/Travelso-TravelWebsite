@@ -8,23 +8,25 @@ namespace Travelso_Website.DataAccess.Repositories;
 
 public class CountryRepository(TravelsoSQLDataContext context) : ICountryRepository
 {
-    public async Task<IEnumerable<Country>>? GetAll()
+    public async Task<IEnumerable<Country>?> GetAll()
     {
         return await context.Countries.ToListAsync();
     }
 
-    public async Task<Country> GetById(object id)
+    public async Task<Country?> GetById(object? id)
     {
         return await context.Countries.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Country>>? GetCountriesByUserAsync(string UserId)
+    public async Task<IEnumerable<Country>?> GetCountriesByUserAsync(string userId)
     {
         var user = await context.TravelsoUsers
             .Include(u => u.MyVisitedCountries)
-            .FirstOrDefaultAsync(u => u.UserId == UserId);
+            .FirstOrDefaultAsync(u => u.UserId == userId);
 
-        return user.MyVisitedCountries.ToList();
+        List<Country> list = [];
+        foreach (var country in user!.MyVisitedCountries) list.Add(country);
+        return list;
 
     }
 
@@ -50,7 +52,7 @@ public class CountryRepository(TravelsoSQLDataContext context) : ICountryReposit
         return true;
     }
 
-    public async Task<bool> Delete(object id)
+    public async Task<bool> Delete(object? id)
     {
         var countryToDelete = await GetById(id);
         if (countryToDelete is null)
