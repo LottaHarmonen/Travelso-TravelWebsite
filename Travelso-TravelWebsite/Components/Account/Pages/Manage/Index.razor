@@ -1,77 +1,55 @@
 ﻿@page "/Account/Manage"
 
 @using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
 @using Microsoft.AspNetCore.Identity
 @using Travelso_TravelWebsite.Data
+@using Travelso_TravelWebsite.Services
+@using Travelso_Website_Shared.Entities
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
+@inject UserService UserService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Profile</PageTitle>
 
 <h3>Profile</h3>
 <StatusMessage />
-
 <div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your BlogPostAuthorUsername." disabled />
-                <label for="BlogPostAuthorUsername" class="form-label">BlogPostAuthorUsername</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                <label for="phone-number" class="form-label">Phone number</label>
-                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </EditForm>
+    <div class="col-md-3">
+        <img src="@GetProfileImageUrl()" class="rounded-circle profile-image" alt="Profile Image" />
+    </div>
+
+</div>
+<div class="row">
+    <div>
+        <h4>@TravelsoUser?.Email</h4>
     </div>
 </div>
 
 @code {
-    private ApplicationUser user = default!;
-    private string? username;
-    private string? phoneNumber;
-
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
-
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    private ClaimsPrincipal _user;
+    private string? _userId;
+    private string DefaultUserImageUrl = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+    private TravelsoUser? TravelsoUser = new TravelsoUser();
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        username = await UserManager.GetUserNameAsync(user);
-        phoneNumber = await UserManager.GetPhoneNumberAsync(user);
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _user = authState.User;
+        _userId = _user.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        Input.PhoneNumber ??= phoneNumber;
+        // Get the user with Id
+        TravelsoUser = await UserService.GetUserWithId(_userId);
+
+        await base.OnInitializedAsync();
     }
 
-    private async Task OnValidSubmitAsync()
+    private string GetProfileImageUrl()
     {
-        if (Input.PhoneNumber != phoneNumber)
-        {
-            var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-            if (!setPhoneResult.Succeeded)
-            {
-                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
-            }
-        }
-
-        await SignInManager.RefreshSignInAsync(user);
-        RedirectManager.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
-    }
-
-    private sealed class InputModel
-    {
-        [Phone]
-        [Display(Name = "Phone number")]
-        public string? PhoneNumber { get; set; }
+        return string.IsNullOrEmpty(TravelsoUser?.ProfileImage) ? DefaultUserImageUrl : TravelsoUser.ProfileImage;
     }
 }

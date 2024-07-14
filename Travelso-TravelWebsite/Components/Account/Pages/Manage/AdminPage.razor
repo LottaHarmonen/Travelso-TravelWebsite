@@ -136,14 +136,12 @@
         userCountry = user.Country;
         userCity = user.City;
 
-        //Get all posts by user
         var allPostByUser = await BlogPostService.PostsByUserAsync(user.UserId);
         AllPostsByUser = allPostByUser.ToList();
     }
 
     private async Task AddNewCountry()
     {
-        //create new country
         Country newCountry = new Country()
             {
                 Name = newCountryName,
